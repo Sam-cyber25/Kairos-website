@@ -1,0 +1,23 @@
+@media (hover: hover) and (pointer: fine) {
+  .cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-green);
+    pointer-events: none;
+    z-index: var(--z-tooltip);
+    transform: translate(-50%, -50%);
+    transition:
+      width 200ms var(--ease-out),
+      height 200ms var(--ease-out),
+      background 200ms var(--ease-out);
+  }
+
+  .cursor.hover {
+    width: 32px;
+    height: 32px;
+    background: var(--color-green-mid);
+    mix-blend-mode: multiply;
+  }
+}

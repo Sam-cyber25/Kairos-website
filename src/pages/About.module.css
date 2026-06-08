@@ -1,0 +1,192 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-2);
+  }
+}
+
+/* === HERO === */
+.hero {
+  background: var(--bg-deep);
+  padding: calc(var(--navbar-height) + var(--section-y)) 0 var(--section-y);
+  text-align: center;
+}
+
+.heroHeading {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--text-on-dark);
+  text-wrap: balance;
+  margin-bottom: var(--space-3);
+}
+
+.heroSubtext {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.125rem;
+  color: var(--color-green-pale);
+  max-width: 45ch;
+  margin: 0 auto;
+}
+
+/* === STORY === */
+.storySectionCream {
+  background: var(--bg-primary);
+  padding: var(--section-y) 0;
+}
+
+.storyLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .storyLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
+.storyHeading {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: var(--text-primary);
+  text-wrap: balance;
+  margin-bottom: var(--space-4);
+}
+
+.storyBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.storyBody p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 65ch;
+}
+
+.pullQuote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  color: var(--text-primary);
+  line-height: 1.3;
+  text-wrap: balance;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* === VALUES === */
+.valuesSection {
+  background: var(--bg-deep);
+  padding: var(--section-y) 0;
+}
+
+.eyebrowDark {
+  color: var(--color-green-soft);
+}
+
+.valuesHeading {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: var(--text-on-dark);
+  text-wrap: balance;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+@media (max-width: 768px) {
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.valueItem {
+  padding: var(--space-6) var(--space-4) var(--space-6) 0;
+  border-top: 1px solid rgba(180, 200, 190, 0.2);
+  margin-right: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .valueItem {
+    margin-right: 0;
+    border-top: 1px solid rgba(180, 200, 190, 0.2);
+    padding: var(--space-4) 0;
+  }
+}
+
+.valueTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.375rem;
+  color: var(--text-on-dark);
+  margin-bottom: var(--space-2);
+}
+
+.valueDesc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9375rem;
+  color: var(--color-green-pale);
+  max-width: 30ch;
+}
+
+/* === PHILOSOPHY === */
+.philosophySection {
+  background: var(--bg-primary);
+  padding: var(--section-y) 0;
+}
+
+.philosophyHeading {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.philosophyBody {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 65ch;
+  margin-bottom: var(--space-3);
+}
+
+.philosophyCta {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+}
+
+/* === CTA === */
+.ctaSection {
+  background: var(--bg-inverse);
+  padding: var(--section-y) 0;
+  text-align: center;
+}
+
+.ctaSection .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.ctaHeading {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  color: var(--text-on-dark);
+  text-wrap: balance;
+}

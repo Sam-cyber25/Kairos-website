@@ -1,0 +1,48 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: 48px;
+  padding: 0 var(--space-4);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  touch-action: manipulation;
+  transition:
+    background-color 200ms var(--ease-out),
+    color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 120ms var(--ease-out);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.filled {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1.5px solid transparent;
+}
+
+.outlined {
+  background: transparent;
+  color: var(--text-on-dark);
+  border: 1.5px solid var(--color-cream);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filled:hover {
+    background: var(--color-cream-dim);
+  }
+
+  .outlined:hover {
+    background: rgba(248, 240, 229, 0.1);
+  }
+}

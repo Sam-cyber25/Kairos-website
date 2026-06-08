@@ -1,0 +1,51 @@
+:root {
+  /* === PRIMITIVE TOKENS === */
+  --color-cream: #F8F0E5;
+  --color-green: #1C352D;
+  --color-green-mid: #3E6052;
+  --color-green-soft: #8CA399;
+  --color-green-pale: #B4C8BE;
+  --color-dark-bg: #0F1E18;
+  --color-cream-dim: #C8C0B5;
+
+  /* === SEMANTIC TOKENS === */
+  --bg-primary: var(--color-cream);
+  --bg-inverse: var(--color-green);
+  --bg-deep: var(--color-dark-bg);
+  --text-primary: var(--color-green);
+  --text-on-dark: var(--color-cream);
+  --text-muted: var(--color-green-mid);
+  --text-subtle: var(--color-green-soft);
+  --border-subtle: var(--color-green-pale);
+  --accent: var(--color-green-mid);
+
+  /* === EASING === */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* === Z-INDEX SCALE === */
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* === SPACING (8px grid) === */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+  --space-16: 128px;
+  --section-y: clamp(4rem, 8vw, 8rem);
+
+  /* === LAYOUT === */
+  --max-width: 1200px;
+  --navbar-height: 72px;
+}
