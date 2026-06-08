@@ -74,7 +74,7 @@
 }
 
 .pullQuote {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-style: italic;
   font-size: clamp(1.75rem, 4vw, 3rem);
   color: var(--text-primary);
@@ -129,7 +129,7 @@
 }
 
 .valueTitle {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 1.375rem;
   color: var(--text-on-dark);
   margin-bottom: var(--space-2);
@@ -167,7 +167,7 @@
   font-weight: 600;
   color: var(--text-primary);
   font-style: italic;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
 }
 

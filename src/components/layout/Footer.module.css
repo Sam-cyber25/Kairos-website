@@ -34,6 +34,10 @@
 }
 
 .logo {
+  height: 64px;
+  width: auto;
+  display: block;
+  object-fit: contain;
   margin-bottom: var(--space-2);
 }
 

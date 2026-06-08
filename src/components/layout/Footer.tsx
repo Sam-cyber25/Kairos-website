@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Mail, MapPin } from 'lucide-react';
 import InstagramIcon from '../ui/InstagramIcon';
-import KairosLogoDark from '../logo/KairosLogoDark';
 import styles from './Footer.module.css';
 
 const NAV_LINKS = [
@@ -18,7 +17,11 @@ export default function Footer() {
       <div className={styles.gridOverlay} aria-hidden="true" />
 
       <div className={styles.inner}>
-        <KairosLogoDark size={72} className={styles.logo} />
+        <img
+          src="/kairos-dark.jpeg"
+          alt="Kairos"
+          className={styles.logo}
+        />
 
         <nav aria-label="Footer navigation" className={styles.nav}>
           {NAV_LINKS.map(({ to, label }) => (

@@ -17,7 +17,7 @@ html.lenis { height: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.7;
@@ -57,7 +57,7 @@ ul, ol {
   background: var(--bg-inverse);
   color: var(--text-on-dark);
   padding: var(--space-1) var(--space-2);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 0 0 4px 4px;
@@ -70,35 +70,11 @@ ul, ol {
 
 /* === CUSTOM CURSOR (desktop only) === */
 @media (hover: hover) and (pointer: fine) {
-  * { cursor: none; }
-
-  .cursor {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--color-green);
-    pointer-events: none;
-    z-index: var(--z-tooltip);
-    transform: translate(-50%, -50%);
-    transition:
-      width 200ms var(--ease-out),
-      height 200ms var(--ease-out),
-      background 200ms var(--ease-out),
-      opacity 200ms var(--ease-out);
-    mix-blend-mode: multiply;
-  }
-
-  .cursor--hover {
-    width: 32px;
-    height: 32px;
-    background: var(--color-green-mid);
-  }
-
-  .cursor--hidden {
-    opacity: 0;
-  }
+  body { cursor: none; }
+  a, button, [role="button"], input, select, textarea { cursor: none; }
 }
+
+/* cursor div lives in CustomCursor.module.css */
 
 /* === FOCUS STYLES === */
 :focus-visible {
@@ -109,7 +85,7 @@ ul, ol {
 
 /* === TYPOGRAPHY BASE === */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   line-height: 1.2;
   text-wrap: balance;
 }
@@ -128,20 +104,20 @@ p {
 
 @media (max-width: 768px) {
   .section-container {
-    padding: 0 var(--space-2);
+    padding: 0 var(--space-3);
   }
 }
 
 /* === EYEBROW LABEL === */
 .eyebrow {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-subtle);
   display: block;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 /* === NOISE TEXTURE === */

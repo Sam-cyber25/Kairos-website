@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import KairosLogoLight from '../logo/KairosLogoLight';
-import KairosLogoDark from '../logo/KairosLogoDark';
 import { useNavbarScroll } from '../../hooks/useNavbarScroll';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import styles from './Navbar.module.css';
@@ -50,9 +48,17 @@ export default function Navbar() {
         <div className={styles.inner}>
           <NavLink to="/" aria-label="Kairos home" className={styles.logoLink} onClick={closeMenu}>
             {scrolled || !isHeroPage ? (
-              <KairosLogoLight size={56} />
+              <img
+                src="/kairos-light.jpeg"
+                alt="Kairos"
+                className={styles.logoImg}
+              />
             ) : (
-              <KairosLogoDark size={56} />
+              <img
+                src="/kairos-dark.jpeg"
+                alt="Kairos"
+                className={styles.logoImg}
+              />
             )}
           </NavLink>
 

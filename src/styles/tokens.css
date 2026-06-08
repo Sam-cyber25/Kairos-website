@@ -45,6 +45,10 @@
   --space-16: 128px;
   --section-y: clamp(4rem, 8vw, 8rem);
 
+  /* === TYPOGRAPHY === */
+  --font-display: 'Cardo', serif;
+  --font-body: 'Montserrat', sans-serif;
+
   /* === LAYOUT === */
   --max-width: 1200px;
   --navbar-height: 72px;

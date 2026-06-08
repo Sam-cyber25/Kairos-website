@@ -8,37 +8,50 @@ export default function CustomCursor() {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    let x = 0, y = 0;
+    // Don't run on touch-only devices
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
     let rafId: number;
+    const LERP = 0.18;
 
     const onMove = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
+      targetX = e.clientX;
+      targetY = e.clientY;
     };
 
     const tick = () => {
-      if (cursor) {
-        cursor.style.left = `${x}px`;
-        cursor.style.top = `${y}px`;
-      }
+      currentX += (targetX - currentX) * LERP;
+      currentY += (targetY - currentY) * LERP;
+      cursor.style.transform = `translate(calc(${currentX}px - 50%), calc(${currentY}px - 50%))`;
       rafId = requestAnimationFrame(tick);
     };
 
-    const onEnterLink = () => cursor.classList.add(styles.hover);
-    const onLeaveLink = () => cursor.classList.remove(styles.hover);
+    const onEnter = () => cursor.classList.add(styles.hover);
+    const onLeave = () => cursor.classList.remove(styles.hover);
+
+    const bindInteractives = () => {
+      document.querySelectorAll<Element>('a, button, [role="button"]').forEach(el => {
+        el.addEventListener('mouseenter', onEnter);
+        el.addEventListener('mouseleave', onLeave);
+      });
+    };
 
     document.addEventListener('mousemove', onMove);
     rafId = requestAnimationFrame(tick);
+    bindInteractives();
 
-    const interactives = document.querySelectorAll('a, button, [role="button"]');
-    interactives.forEach(el => {
-      el.addEventListener('mouseenter', onEnterLink);
-      el.addEventListener('mouseleave', onLeaveLink);
-    });
+    // Re-bind when new interactive elements appear (e.g. after route change)
+    const observer = new MutationObserver(bindInteractives);
+    observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       document.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(rafId);
+      observer.disconnect();
     };
   }, []);
 
