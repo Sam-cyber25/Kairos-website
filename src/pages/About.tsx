@@ -25,7 +25,7 @@ export default function About() {
       <main id="main-content">
 
         {/* === HERO === */}
-        <section className={styles.hero} aria-label="About page header">
+        <section className={styles.hero} aria-label="About page header" data-cursor-theme="dark">
           <div className={styles.container}>
             <ScrollReveal>
               <h1 className={styles.heroHeading}>The Pursuit Continues</h1>
@@ -71,7 +71,7 @@ export default function About() {
         </section>
 
         {/* === VALUES === */}
-        <section className={styles.valuesSection} aria-labelledby="values-heading">
+        <section className={styles.valuesSection} aria-labelledby="values-heading" data-cursor-theme="dark">
           <div className={styles.container}>
             <ScrollReveal>
               <span className={`eyebrow ${styles.eyebrowDark}`}>What we stand for</span>
@@ -113,7 +113,7 @@ export default function About() {
         </section>
 
         {/* === CTA === */}
-        <section className={styles.ctaSection} aria-label="Call to action">
+        <section className={styles.ctaSection} aria-label="Call to action" data-cursor-theme="dark">
           <div className={styles.container}>
             <ScrollReveal>
               <h2 className={styles.ctaHeading}>Ready to seize your moment?</h2>

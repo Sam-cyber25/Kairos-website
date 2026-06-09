@@ -54,7 +54,7 @@ export default function Services() {
       <main id="main-content">
 
         {/* === PAGE HERO === */}
-        <section className={styles.pageHero} aria-label="Services header">
+        <section className={styles.pageHero} aria-label="Services header" data-cursor-theme="dark">
           <div className={styles.container}>
             <ScrollReveal>
               <h1 className={styles.pageHeading}>What We Build</h1>
@@ -130,7 +130,7 @@ export default function Services() {
         </section>
 
         {/* === SERVICE 2: Domain and Hosting === */}
-        <section className={styles.serviceSectionGreen} aria-labelledby="service-hosting">
+        <section className={styles.serviceSectionGreen} aria-labelledby="service-hosting" data-cursor-theme="dark">
           <div className={styles.container}>
             <div className={`${styles.serviceLayout} ${styles.reversed}`}>
               <div className={styles.serviceVisual}>
@@ -251,7 +251,7 @@ export default function Services() {
         </section>
 
         {/* === SERVICE 4: Full Package === */}
-        <section className={styles.fullPackage} aria-labelledby="service-bundle">
+        <section className={styles.fullPackage} aria-labelledby="service-bundle" data-cursor-theme="dark">
           <div className={styles.container}>
             <ScrollReveal>
               <div className={styles.packageInner}>

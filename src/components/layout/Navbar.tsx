@@ -22,6 +22,11 @@ export default function Navbar() {
 
   const isHeroPage = location.pathname === '/';
 
+  // Pages whose hero is dark — navbar is transparent there, so cursor needs the
+  // dark token so the custom cursor stays visible against the dark background.
+  const darkHeroPages = ['/', '/about', '/services'];
+  const navbarOnDark  = darkHeroPages.includes(location.pathname) && !scrolled;
+
   const closeMenu = () => setMenuOpen(false);
 
   const menuVariants = {
@@ -44,6 +49,7 @@ export default function Navbar() {
       <header
         className={`${styles.navbar} ${scrolled ? styles.scrolled : ''} ${isHeroPage && !scrolled ? styles.onHero : ''}`}
         role="banner"
+        data-cursor-theme={navbarOnDark ? 'dark' : undefined}
       >
         <div className={styles.inner}>
           <NavLink to="/" aria-label="Kairos home" className={styles.logoLink} onClick={closeMenu}>

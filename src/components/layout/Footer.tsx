@@ -13,7 +13,7 @@ const NAV_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className={styles.footer} role="contentinfo">
+    <footer className={styles.footer} role="contentinfo" data-cursor-theme="dark">
       <div className={styles.gridOverlay} aria-hidden="true" />
 
       <div className={styles.inner}>

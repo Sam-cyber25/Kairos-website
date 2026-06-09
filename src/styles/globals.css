@@ -73,13 +73,7 @@ ul, ol {
   transform: translateY(0);
 }
 
-/* === CUSTOM CURSOR (desktop only) === */
-@media (hover: hover) and (pointer: fine) {
-  body { cursor: none; }
-  a, button, [role="button"], input, select, textarea { cursor: none; }
-}
-
-/* cursor div lives in CustomCursor.module.css */
+/* cursor: none and all cursor rules live in CustomCursor.css (global, non-module) */
 
 /* === FOCUS STYLES === */
 :focus-visible {

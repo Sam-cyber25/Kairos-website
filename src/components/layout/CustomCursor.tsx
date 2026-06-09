@@ -1,93 +1,110 @@
 import { useEffect, useRef } from 'react';
-import styles from './CustomCursor.module.css';
+import './CustomCursor.css';
 
-// ─── lerp-based bracket cursor ────────────────────────────────────────────────
-// DOM: .cursor > (.bracketLeft "(", .dot, .bracketRight ")")
-// Hover: brackets snap inward 90°, dot scales 1.35×
-// Click: all elements scale 0.8, spring back on release
-// Starts hidden, visible after first mousemove (initialised at viewport centre)
+// ─── KairosCursor ─────────────────────────────────────────────────────────────
+// Resting: 7px circle. Hover: dot fades out, SVG bolt fades in.
+// Click: bolt compresses then springs back. Lerp 0.14.
+// Direct element.style.transform — no CSS vars (avoids child recalc at 60fps).
+
+class KairosCursor {
+  private el: HTMLDivElement;
+  private x: number;
+  private y: number;
+  private tx: number;
+  private ty: number;
+  private raf: number | null = null;
+  private fns: Array<() => void> = [];
+
+  constructor(el: HTMLDivElement) {
+    this.el = el;
+    this.x  = window.innerWidth  / 2;
+    this.y  = window.innerHeight / 2;
+    this.tx = this.x;
+    this.ty = this.y;
+  }
+
+  private on(t: EventTarget, type: string, fn: (e: Event) => void, opts?: AddEventListenerOptions) {
+    t.addEventListener(type, fn, opts);
+    this.fns.push(() => t.removeEventListener(type, fn));
+  }
+
+  init() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    this.on(document, 'mousemove', (e: Event) => {
+      const { clientX: cx, clientY: cy } = e as MouseEvent;
+      this.tx = cx; this.ty = cy;
+      // Snap to pointer on first appearance so it doesn't drift in from center
+      if (!this.el.classList.contains('cursor--on')) { this.x = cx; this.y = cy; }
+      this.el.classList.add('cursor--on');
+      // Dark-theme detection: check element directly under cursor each frame
+      const under = document.elementFromPoint(cx, cy);
+      this.el.classList.toggle(
+        'cursor--dark',
+        !!(under as Element | null)?.closest('[data-cursor-theme="dark"]'),
+      );
+    }, { passive: true });
+
+    this.on(document, 'mouseleave', () => this.el.classList.remove('cursor--on'));
+    this.on(document, 'mouseenter', () => this.el.classList.add('cursor--on'));
+
+    const INTERACTIVE = 'a, button, [role="button"], label, select, summary';
+    this.on(document, 'mouseover', (e: Event) => {
+      if ((e.target as Element | null)?.closest(INTERACTIVE))
+        this.el.classList.add('cursor--hover');
+    });
+    this.on(document, 'mouseout', (e: Event) => {
+      if ((e.target as Element | null)?.closest(INTERACTIVE))
+        this.el.classList.remove('cursor--hover');
+    });
+
+    this.on(document, 'mousedown', () => this.el.classList.add('cursor--press'));
+    this.on(document, 'mouseup',   () => this.el.classList.remove('cursor--press'));
+
+    this.loop();
+  }
+
+  private loop() {
+    this.x += (this.tx - this.x) * 0.14;
+    this.y += (this.ty - this.y) * 0.14;
+    this.el.style.transform = `translate(${this.x}px, ${this.y}px)`;
+    this.raf = requestAnimationFrame(() => this.loop());
+  }
+
+  destroy() {
+    if (this.raf !== null) cancelAnimationFrame(this.raf);
+    this.fns.forEach(f => f());
+  }
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cursor = cursorRef.current;
-    if (!cursor) return;
-
-    // Skip on touch / non-hover devices — CSS also handles this
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-    const LERP = 0.18;
-    let targetX = window.innerWidth / 2;
-    let targetY = window.innerHeight / 2;
-    let currentX = targetX;
-    let currentY = targetY;
-    let rafId: number;
-    let hasMovedOnce = false;
-
-    // ── rAF tick ──────────────────────────────────────────────────────────────
-    const tick = () => {
-      currentX += (targetX - currentX) * LERP;
-      currentY += (targetY - currentY) * LERP;
-      // Direct style.transform — never CSS custom properties (would trigger child recalc)
-      cursor.style.transform = `translate(${currentX}px, ${currentY}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-
-    rafId = requestAnimationFrame(tick);
-
-    // ── pointer tracking ─────────────────────────────────────────────────────
-    const onMove = (e: MouseEvent) => {
-      targetX = e.clientX;
-      targetY = e.clientY;
-      if (!hasMovedOnce) {
-        // Snap current position on first move so cursor doesn't drift in from centre
-        currentX = e.clientX;
-        currentY = e.clientY;
-        cursor.style.opacity = '1';
-        hasMovedOnce = true;
-      }
-    };
-
-    // ── hover state ──────────────────────────────────────────────────────────
-    const onEnter = () => cursor.classList.add(styles.hovering);
-    const onLeave = () => cursor.classList.remove(styles.hovering);
-
-    // ── click state ──────────────────────────────────────────────────────────
-    const onDown  = () => cursor.classList.add(styles.clicking);
-    const onUp    = () => cursor.classList.remove(styles.clicking);
-
-    // ── interactive element binding ───────────────────────────────────────────
-    const bindInteractives = () => {
-      document.querySelectorAll<Element>('a, button, [role="button"], input, select, textarea').forEach(el => {
-        el.addEventListener('mouseenter', onEnter);
-        el.addEventListener('mouseleave', onLeave);
-      });
-    };
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mousedown', onDown);
-    document.addEventListener('mouseup', onUp);
-    bindInteractives();
-
-    // Re-bind after route changes inject new interactive elements
-    const observer = new MutationObserver(bindInteractives);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mousedown', onDown);
-      document.removeEventListener('mouseup', onUp);
-      observer.disconnect();
-    };
+    if (!ref.current) return;
+    const c = new KairosCursor(ref.current);
+    c.init();
+    return () => c.destroy();
   }, []);
 
   return (
-    <div ref={cursorRef} className={styles.cursor} aria-hidden="true">
-      <span className={`${styles.bracket} ${styles.bracketLeft}`}>(</span>
-      <span className={styles.dot} />
-      <span className={`${styles.bracket} ${styles.bracketRight}`}>)</span>
+    <div ref={ref} className="cursor" aria-hidden="true">
+      <div className="cursor__dot" />
+      {/* Path: M 6,0 L 2,10 L 6,10 L 4,18 L 12,7 L 8,7 L 10,0 Z
+          viewBox 0 0 14 20 gives ~1px padding on all sides               */}
+      <svg
+        className="cursor__bolt"
+        viewBox="0 0 14 20"
+        width="12"
+        height="18"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M 6,0 L 2,10 L 6,10 L 4,18 L 12,7 L 8,7 L 10,0 Z" />
+      </svg>
     </div>
   );
 }

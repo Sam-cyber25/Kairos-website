@@ -110,7 +110,7 @@ export default function Home() {
       <main id="main-content">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section className={styles.hero} aria-label="Hero">
+        <section className={styles.hero} aria-label="Hero" data-cursor-theme="dark">
           {/* Background texture layers */}
           <div className={styles.heroGrid}  aria-hidden="true" />
           <div className={styles.heroNoise} aria-hidden="true" />
@@ -226,7 +226,7 @@ export default function Home() {
         </section>
 
         {/* ── Quote ────────────────────────────────────────────────────────── */}
-        <section className={styles.quote} aria-label="Agency quote">
+        <section className={styles.quote} aria-label="Agency quote" data-cursor-theme="dark">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
               <blockquote className={styles.quoteText}>
@@ -260,7 +260,7 @@ export default function Home() {
                       item.comingSoon ? styles.comingSoon : '',
                     ].filter(Boolean).join(' ')}
                   >
-                    <div className={styles.portfolioImageWrap}>
+                    <div className={styles.portfolioImageWrap} data-cursor-theme="dark">
                       <div
                         className={styles.portfolioPlaceholder}
                         aria-label={`${item.name} project preview`}

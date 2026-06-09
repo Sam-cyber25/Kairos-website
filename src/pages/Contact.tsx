@@ -47,7 +47,7 @@ export default function Contact() {
 
         <div className={styles.layout}>
           {/* === LEFT PANEL === */}
-          <div className={styles.leftPanel} role="complementary" aria-label="Contact information">
+          <div className={styles.leftPanel} role="complementary" aria-label="Contact information" data-cursor-theme="dark">
             <div className={styles.leftContent}>
               <h1 className={styles.leftHeading}>Let's build something.</h1>
               <p className={styles.leftSubtext}>

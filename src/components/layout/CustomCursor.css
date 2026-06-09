@@ -1,0 +1,94 @@
+/* ─── Kairos Cursor — Lightning Bolt ──────────────────────────────────────────
+   Resting: 7px filled circle (cursor__dot).
+   Hover:   dot fades out 180ms, SVG lightning bolt fades in 200ms.
+   Click:   bolt compresses scale(0.75) 100ms, springs back 400ms.
+   Leave:   bolt fades out, dot fades back 180ms.
+
+   Global CSS — class names are NOT hashed.
+   JS adds: cursor--on | cursor--dark | cursor--hover | cursor--press
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Touch / coarse pointer → hide ───────────────────────────────────────── */
+@media (pointer: coarse) {
+  .cursor { display: none !important; }
+  * { cursor: auto !important; }
+}
+
+/* ── Reduced motion → hide ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cursor { display: none !important; }
+  * { cursor: auto !important; }
+}
+
+/* ── Fine pointer only ───────────────────────────────────────────────────── */
+@media (hover: hover) and (pointer: fine) {
+
+  /* !important overrides browser UA sheet on a, button, input, etc. */
+  *, *::before, *::after { cursor: none !important; }
+
+  /* Form text inputs keep the I-beam — they are not bolt targets */
+  input, textarea { cursor: text !important; }
+
+  /* Wrapper — stays at top-left; lerp via JS element.style.transform ──────── */
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 99999;
+    /* currentColor drives both children */
+    color: #1C352D;
+    /* Hidden until first mousemove */
+    opacity: 0;
+    transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .cursor--on   { opacity: 1; }
+  .cursor--dark { color: #F8F0E5; }
+
+  /* ── Both children share the same hot-point centering ─────────────────── */
+  .cursor__dot,
+  .cursor__bolt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Dot — 7px filled circle ──────────────────────────────────────────── */
+  .cursor__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 1;
+    transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* ── Bolt — SVG 12 × 18 px ────────────────────────────────────────────── */
+  .cursor__bolt {
+    width: 12px;
+    height: 18px;
+    opacity: 0;
+    /* Spring-back on transform; fade-in on opacity */
+    transition:
+      opacity   200ms cubic-bezier(0.23, 1, 0.32, 1),
+      transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .cursor__bolt path { fill: currentColor; }
+
+  /* ── HOVER: swap dot → bolt ───────────────────────────────────────────── */
+  .cursor--hover .cursor__dot  { opacity: 0; }
+  .cursor--hover .cursor__bolt { opacity: 1; }
+
+  /* ── PRESS: bolt compresses fast; spring-back uses default above ──────── */
+  .cursor--press .cursor__bolt {
+    transform: translate(-50%, -50%) scale(0.75);
+    transition:
+      opacity   200ms cubic-bezier(0.23, 1, 0.32, 1),
+      transform 100ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+}

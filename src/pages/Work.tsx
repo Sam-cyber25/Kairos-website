@@ -74,7 +74,7 @@ export default function Work() {
                     <article
                       className={`${styles.card} ${project.comingSoon ? styles.comingSoon : ''}`}
                     >
-                      <div className={styles.imageWrap}>
+                      <div className={styles.imageWrap} data-cursor-theme="dark">
                         <div
                           className={styles.imagePlaceholder}
                           role="img"
