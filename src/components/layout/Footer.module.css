@@ -2,7 +2,8 @@
   position: relative;
   background: var(--bg-deep);
   overflow: hidden;
-  padding: var(--section-y) 0 var(--space-6);
+  /* Safe area inset for notched devices */
+  padding: var(--section-y) 0 calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
 }
 
 .gridOverlay {
@@ -34,8 +35,9 @@
 }
 
 .logo {
-  height: 64px;
+  max-width: 160px;
   width: auto;
+  height: auto;
   display: block;
   object-fit: contain;
   margin-bottom: var(--space-2);

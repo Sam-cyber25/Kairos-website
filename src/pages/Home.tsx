@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Palette, Globe, Wrench, ArrowRight } from 'lucide-react';
+import HeroClock from '../components/hero/HeroClock';
 import PageTransition from '../components/layout/PageTransition';
 import Button from '../components/ui/Button';
 import Marquee from '../components/ui/Marquee';
@@ -10,27 +11,25 @@ import styles from './Home.module.css';
 
 // ─── data ────────────────────────────────────────────────────────────────────
 
-const SERVICES = [
+const SERVICE_FEATURED = {
+  icon: Palette,
+  title: 'Website Design',
+  description:
+    'Every layout is designed from scratch for your specific business. What works for a coaching institute in Kanpur is different from what works for a restaurant.',
+};
+
+const SERVICES_SECONDARY = [
   {
-    number: '01',
-    icon: Palette,
-    title: 'Website Design',
-    description:
-      'Custom-built from scratch. Every pixel placed with purpose. Your customers will know the difference.',
-  },
-  {
-    number: '02',
     icon: Globe,
-    title: 'Domain and Hosting',
+    title: 'Domain & Hosting',
     description:
-      'Domain, Vercel deployment, SSL, custom domain. Your website live and fast, in a day.',
+      'We get your site live on a real domain, with SSL and Vercel hosting sorted. Usually within a day.',
   },
   {
-    number: '03',
     icon: Wrench,
     title: 'Ongoing Maintenance',
     description:
-      'Content updates, performance checks, small design changes. We keep it running like it should.',
+      "Content updates, performance checks, and small design fixes every month. You don't have to think about it.",
   },
 ];
 
@@ -41,6 +40,7 @@ const PORTFOLIO_ITEMS = [
     location: 'Kanpur',
     tags: ['Web Design', 'Local Business'],
     featured: true,
+    comingSoon: false,
   },
   {
     name: 'Coming Soon',
@@ -48,30 +48,14 @@ const PORTFOLIO_ITEMS = [
     location: 'Kanpur',
     tags: ['Web Design'],
     featured: false,
+    comingSoon: true,
   },
-];
-
-interface Dot {
-  top: string;
-  left?: string;
-  right?: string;
-  size: number;
-  duration: number;
-}
-
-const DOTS: Dot[] = [
-  { top: '22%', left: '18%',  size: 4, duration: 3.8 },
-  { top: '68%', left: '12%',  size: 3, duration: 5.1 },
-  { top: '30%', right: '16%', size: 5, duration: 4.4 },
-  { top: '72%', right: '20%', size: 3, duration: 3.2 },
-  { top: '50%', left: '6%',   size: 4, duration: 6.0 },
 ];
 
 // ─── component ───────────────────────────────────────────────────────────────
 
 export default function Home() {
-  // Runs once per browser session. Sets the flag immediately so a hard-refresh
-  // is treated as a new session visit.
+  // One-shot intro: runs once per browser session (sessionStorage gate)
   const [isFirstVisit] = useState(() => {
     if (typeof window === 'undefined') return false;
     const seen = sessionStorage.getItem('kairos-intro');
@@ -90,15 +74,18 @@ export default function Home() {
     return () => clearTimeout(t);
   }, [isFirstVisit]);
 
-  // Hero element entrance delays — longer sequence on first visit
+  // Hero entrance stagger — longer sequence on first visit
   const d = isFirstVisit
-    ? { logo: 0.4, tagline: 0.9, h1: 1.4, sub: 1.8, ctas: 1.85 }
-    : { logo: 0.05, tagline: 0.15, h1: 0.28, sub: 0.4, ctas: 0.45 };
+    ? { logo: 0.4, h1: 1.4, sub: 1.8, ctas: 1.85 }
+    : { logo: 0.05, h1: 0.28, sub: 0.4, ctas: 0.45 };
+
+  // Icon component for featured service
+  const FeaturedIcon = SERVICE_FEATURED.icon;
 
   return (
     <PageTransition>
 
-      {/* ── One-shot intro overlay ──────────────────────────────────────── */}
+      {/* ── One-shot intro overlay ──────────────────────────────────────────── */}
       <AnimatePresence>
         {showIntro && (
           <motion.div
@@ -109,11 +96,11 @@ export default function Home() {
             aria-hidden="true"
           >
             <motion.img
-              src="/kairos-dark.jpeg"
+              src="/kairos-light.png"
               alt=""
               className={styles.introLogo}
-              initial={{ opacity: 0, scale: 0.88 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, transform: 'scale(0.88)' }}
+              animate={{ opacity: 1, transform: 'scale(1)' }}
               transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
             />
           </motion.div>
@@ -122,70 +109,41 @@ export default function Home() {
 
       <main id="main-content">
 
-        {/* ── Hero ───────────────────────────────────────────────────────── */}
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className={styles.hero} aria-label="Hero">
+          {/* Background texture layers */}
           <div className={styles.heroGrid}  aria-hidden="true" />
           <div className={styles.heroNoise} aria-hidden="true" />
 
-          {/* Floating ambient dots */}
-          <div className={styles.floatingDots} aria-hidden="true">
-            {DOTS.map((dot, i) => (
-              <span
-                key={i}
-                className={styles.floatingDot}
-                style={{
-                  top: dot.top,
-                  left: dot.left,
-                  right: dot.right,
-                  width: `${dot.size}px`,
-                  height: `${dot.size}px`,
-                  animationDuration: `${dot.duration}s`,
-                  animationDelay: `${i * 0.45}s`,
-                }}
-              />
-            ))}
-          </div>
+          {/* Ghost clock — atmospheric, z-index 0, aria-hidden */}
+          <HeroClock />
 
           <div className={styles.heroContent}>
 
-            {/* Eyebrow tagline — clip-path left-to-right reveal */}
-            <motion.p
-              className={styles.heroTagline}
-              initial={{ clipPath: 'inset(0 100% 0 0)' }}
-              animate={{ clipPath: 'inset(0 0% 0 0)' }}
-              transition={{ duration: 0.9, delay: d.tagline, ease: [0.23, 1, 0.32, 1] }}
-            >
-              The Pursuit Continues
-            </motion.p>
-
-            {/* JPEG logo with breathing glow */}
-            <motion.div
-              className={styles.heroLogoWrap}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+            {/* Logo mark — bare img, no container box, no glow, no border-radius */}
+            <motion.img
+              src="/kairos-light.png"
+              alt="Kairos"
+              className={styles.heroLogo}
+              initial={{ opacity: 0, transform: 'scale(0.9)' }}
+              animate={{ opacity: 1, transform: 'scale(1)' }}
               transition={{ duration: 0.8, delay: d.logo, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <img
-                src="/kairos-dark.jpeg"
-                alt="Kairos"
-                className={styles.heroLogo}
-              />
-            </motion.div>
+            />
 
-            {/* Separator line */}
+            {/* Separator — 80px vertical line */}
             <motion.div
               className={styles.heroSeparator}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.55, delay: d.h1 - 0.12, ease: [0.23, 1, 0.32, 1] }}
-              style={{ transformOrigin: 'left' }}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 0.45, delay: d.h1 - 0.14, ease: [0.23, 1, 0.32, 1] }}
+              style={{ transformOrigin: 'top' }}
               aria-hidden="true"
             />
 
             <motion.h1
               className={styles.heroHeadline}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, transform: 'translateY(20px)' }}
+              animate={{ opacity: 1, transform: 'translateY(0px)' }}
               transition={{ duration: 0.6, delay: d.h1, ease: [0.23, 1, 0.32, 1] }}
             >
               We build websites that work.
@@ -193,17 +151,17 @@ export default function Home() {
 
             <motion.p
               className={styles.heroSubline}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, transform: 'translateY(16px)' }}
+              animate={{ opacity: 1, transform: 'translateY(0px)' }}
               transition={{ duration: 0.6, delay: d.sub, ease: [0.23, 1, 0.32, 1] }}
             >
-              Kanpur's boldest web design agency.
+              Every business in Kanpur deserves a website that actually works.
             </motion.p>
 
             <motion.div
               className={styles.heroCtas}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, transform: 'translateY(16px)' }}
+              animate={{ opacity: 1, transform: 'translateY(0px)' }}
               transition={{ duration: 0.6, delay: d.ctas, ease: [0.23, 1, 0.32, 1] }}
             >
               <Button as="a" href="/work" variant="filled">See Our Work</Button>
@@ -216,10 +174,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Marquee ────────────────────────────────────────────────────── */}
+        {/* ── Marquee ──────────────────────────────────────────────────────── */}
         <Marquee />
 
-        {/* ── Services preview ───────────────────────────────────────────── */}
+        {/* ── Services ─────────────────────────────────────────────────────── */}
+        {/* MAX ONE eyebrow on this page — it lives here */}
         <section className={styles.services} aria-labelledby="services-heading">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
@@ -229,20 +188,35 @@ export default function Home() {
               </h2>
             </ScrollReveal>
 
-            <div className={styles.servicesGrid}>
-              {SERVICES.map((service, i) => {
+            {/* Featured card — Website Design, full-width */}
+            <ScrollReveal>
+              <article className={styles.serviceFeatured}>
+                <div className={styles.serviceHeader}>
+                  <FeaturedIcon size={22} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
+                  <h3 className={styles.serviceFeaturedTitle}>{SERVICE_FEATURED.title}</h3>
+                </div>
+                <p className={styles.serviceFeaturedDesc}>{SERVICE_FEATURED.description}</p>
+                <Link to="/services" className={styles.serviceLink} style={{ touchAction: 'manipulation' }}>
+                  Learn more <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
+                </Link>
+              </article>
+            </ScrollReveal>
+
+            {/* Secondary cards — 2-column grid (Domain & Hosting, Maintenance) */}
+            <div className={styles.servicesSecondary}>
+              {SERVICES_SECONDARY.map((service, i) => {
                 const Icon = service.icon;
                 return (
-                  <ScrollReveal key={service.number} delay={i * 0.05}>
+                  <ScrollReveal key={service.title} delay={i * 0.05}>
                     <article className={styles.serviceItem}>
-                      <span className={styles.serviceNumber} aria-hidden="true">
-                        {service.number}
-                      </span>
                       <div className={styles.serviceHeader}>
-                        <Icon size={20} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
+                        <Icon size={18} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
                         <h3 className={styles.serviceTitle}>{service.title}</h3>
                       </div>
                       <p className={styles.serviceDesc}>{service.description}</p>
+                      <Link to="/services" className={styles.serviceLink} style={{ touchAction: 'manipulation' }}>
+                        Learn more <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
+                      </Link>
                     </article>
                   </ScrollReveal>
                 );
@@ -251,14 +225,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Quote teaser ───────────────────────────────────────────────── */}
+        {/* ── Quote ────────────────────────────────────────────────────────── */}
         <section className={styles.quote} aria-label="Agency quote">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
               <blockquote className={styles.quoteText}>
                 "We don't just build websites. We build the version of your business the internet sees."
               </blockquote>
-              <Link to="/about" className={styles.quoteLink}>
+              <Link to="/about" className={styles.quoteLink} style={{ touchAction: 'manipulation' }}>
                 Our Story
                 <ArrowRight size={16} strokeWidth={2} className={styles.quoteArrow} aria-hidden="true" />
               </Link>
@@ -266,11 +240,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Portfolio preview ──────────────────────────────────────────── */}
+        {/* ── Portfolio preview ─────────────────────────────────────────────── */}
         <section className={styles.portfolio} aria-labelledby="portfolio-heading">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
-              <span className="eyebrow">Our Work</span>
+              {/* No eyebrow — heading stands alone */}
               <h2 className={styles.sectionHeading} id="portfolio-heading">
                 What we've shipped so far.
               </h2>
@@ -280,19 +254,29 @@ export default function Home() {
               {PORTFOLIO_ITEMS.map((item, i) => (
                 <ScrollReveal key={item.name} delay={i * 0.07}>
                   <article
-                    className={`${styles.portfolioItem} ${item.featured ? styles.featured : ''}`}
+                    className={[
+                      styles.portfolioItem,
+                      item.featured ? styles.featured : '',
+                      item.comingSoon ? styles.comingSoon : '',
+                    ].filter(Boolean).join(' ')}
                   >
                     <div className={styles.portfolioImageWrap}>
                       <div
                         className={styles.portfolioPlaceholder}
                         aria-label={`${item.name} project preview`}
                       >
-                        <span className={styles.placeholderText}>{item.name}</span>
+                        {item.comingSoon ? (
+                          <span className={styles.comingSoonPulse}>Coming Soon</span>
+                        ) : (
+                          <span className={styles.placeholderText}>{item.name}</span>
+                        )}
                       </div>
-                      <div className={styles.portfolioOverlay}>
-                        <span className={styles.viewLabel}>View Project</span>
-                        <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                      </div>
+                      {!item.comingSoon && (
+                        <div className={styles.portfolioOverlay}>
+                          <span className={styles.viewLabel}>View Project</span>
+                          <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                        </div>
+                      )}
                     </div>
                     <div className={styles.portfolioMeta}>
                       <h3 className={styles.portfolioName}>{item.name}</h3>
@@ -310,7 +294,7 @@ export default function Home() {
 
             <ScrollReveal>
               <div className={styles.allWork}>
-                <Link to="/work" className={styles.allWorkLink}>
+                <Link to="/work" className={styles.allWorkLink} style={{ touchAction: 'manipulation' }}>
                   All Work
                   <ArrowRight size={16} strokeWidth={2} className={styles.quoteArrow} aria-hidden="true" />
                 </Link>

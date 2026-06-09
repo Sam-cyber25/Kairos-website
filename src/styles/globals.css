@@ -41,6 +41,11 @@ button {
   border: none;
   background: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
 }
 
 ul, ol {
@@ -109,11 +114,12 @@ p {
 }
 
 /* === EYEBROW LABEL === */
+/* MAX ONE per page. 11px Montserrat 600, 0.2em tracking. Whisper, not announce. */
 .eyebrow {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--text-eyebrow); /* 0.6875rem = 11px */
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-subtle);
   display: block;

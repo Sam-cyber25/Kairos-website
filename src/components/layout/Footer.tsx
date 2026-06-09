@@ -17,8 +17,9 @@ export default function Footer() {
       <div className={styles.gridOverlay} aria-hidden="true" />
 
       <div className={styles.inner}>
+        {/* Footer is on dark bg — use cream (light) mark */}
         <img
-          src="/kairos-dark.jpeg"
+          src="/kairos-light.png"
           alt="Kairos"
           className={styles.logo}
         />

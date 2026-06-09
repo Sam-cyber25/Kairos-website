@@ -16,10 +16,11 @@ export default function ScrollReveal({ children, delay = 0, className }: ScrollR
     <motion.div
       ref={ref}
       className={className}
-      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+      // GPU-composited: use transform string, NOT y shorthand (y runs on main thread)
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateY(20px)' }}
       animate={isVisible
-        ? { opacity: 1, y: 0 }
-        : reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }
+        ? { opacity: 1, transform: 'translateY(0px)' }
+        : reducedMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateY(20px)' }
       }
       transition={{
         duration: reducedMotion ? 0.15 : 0.5,

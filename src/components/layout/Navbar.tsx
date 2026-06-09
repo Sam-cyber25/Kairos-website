@@ -47,19 +47,20 @@ export default function Navbar() {
       >
         <div className={styles.inner}>
           <NavLink to="/" aria-label="Kairos home" className={styles.logoLink} onClick={closeMenu}>
-            {scrolled || !isHeroPage ? (
-              <img
-                src="/kairos-light.jpeg"
-                alt="Kairos"
-                className={styles.logoImg}
-              />
-            ) : (
-              <img
-                src="/kairos-dark.jpeg"
-                alt="Kairos"
-                className={styles.logoImg}
-              />
-            )}
+            {/* Two images; CSS toggles opacity based on state — avoids JS src mutation flash.
+                kairos-dark.png = deep green mark → use on CREAM (light) backgrounds
+                kairos-light.png = cream mark       → use on DARK GREEN backgrounds */}
+            <img
+              src="/kairos-dark.png"
+              alt="Kairos"
+              className={`${styles.logoImg} ${styles.logoDark}`}
+            />
+            <img
+              src="/kairos-light.png"
+              alt=""
+              aria-hidden="true"
+              className={`${styles.logoImg} ${styles.logoLight}`}
+            />
           </NavLink>
 
           <nav aria-label="Main navigation" className={styles.desktopNav}>

@@ -30,22 +30,48 @@
 }
 
 .logoLink {
+  /* position: relative lets the light logo overlay the dark one */
+  position: relative;
   display: flex;
   align-items: center;
   flex-shrink: 0;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* Shared base for both logo images */
 .logoImg {
-  height: 52px;
+  height: 44px;
   width: auto;
   display: block;
   object-fit: contain;
+  transition: opacity 250ms var(--ease-out);
 }
+
+/* Dark mark (green on transparent) — stays in flow, sets container width */
+.logoDark {
+  opacity: 1;
+}
+
+/* Light mark (cream on transparent) — overlaid absolutely, hidden by default */
+.logoLight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+/* On hero section (dark bg) — show cream mark, hide dark mark */
+.navbar.onHero .logoDark  { opacity: 0; }
+.navbar.onHero .logoLight { opacity: 1; }
+
+/* Once scrolled back to cream bg — restore dark mark */
+.navbar.scrolled .logoDark  { opacity: 1; }
+.navbar.scrolled .logoLight { opacity: 0; }
 
 @media (max-width: 768px) {
   .logoImg {
-    height: 40px;
+    height: 36px;
   }
 }
 
