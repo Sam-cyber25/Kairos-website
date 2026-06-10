@@ -43,15 +43,16 @@
 }
 
 .logo {
-  width: 160px;
-  height: auto;
+  width: 170px !important;
+  height: auto !important;
+  max-width: none !important;
   display: block;
   object-fit: contain;
 }
 
 @media (max-width: 768px) {
   .logo {
-    width: 120px;
+    width: 120px !important;
   }
 }
 
