@@ -43,11 +43,16 @@
 }
 
 .logo {
-  max-width: 130px;
-  width: auto;
+  width: 160px;
   height: auto;
   display: block;
   object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    width: 120px;
+  }
 }
 
 .logoName {

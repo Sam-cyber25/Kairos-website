@@ -41,7 +41,7 @@
 
 /* Shared base for both logo images */
 .logoImg {
-  height: 56px;
+  height: 72px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -71,7 +71,7 @@
 
 @media (max-width: 768px) {
   .logoImg {
-    height: 44px;
+    height: 52px;
   }
 }
 
@@ -163,6 +163,27 @@
   justify-content: center;
   flex-direction: column;
   padding: var(--space-8);
+}
+
+.closeButton {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-dark);
+  touch-action: manipulation;
+  opacity: 0.75;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .closeButton:hover {
+    opacity: 1;
+  }
 }
 
 .mobileMenu nav {

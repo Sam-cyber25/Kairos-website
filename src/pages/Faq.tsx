@@ -90,7 +90,7 @@ export default function Faq() {
           </div>
         </section>
 
-        <section className={styles.faqSection} aria-labelledby="faq-heading">
+        <section className={styles.faqSection} aria-labelledby="faq-heading" data-cursor-theme="light">
           <div className={styles.sectionInner}>
             <ScrollReveal>
               <h2 id="faq-heading" className={styles.sectionHeading}>

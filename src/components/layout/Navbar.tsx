@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { to: '/work', label: 'Work' },
   { to: '/services', label: 'Services' },
   { to: '/about', label: 'About' },
+  { to: '/faq', label: 'FAQ' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -109,6 +110,13 @@ export default function Navbar() {
             aria-modal="true"
             aria-label="Navigation menu"
           >
+            <button
+              className={styles.closeButton}
+              aria-label="Close menu"
+              onClick={closeMenu}
+            >
+              <X size={24} strokeWidth={1.5} />
+            </button>
             <nav aria-label="Mobile navigation">
               {NAV_LINKS.map(({ to, label }, i) => (
                 <motion.div key={to} custom={i} variants={linkVariants} initial="hidden" animate="visible">
