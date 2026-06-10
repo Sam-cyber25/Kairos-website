@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Palette, Globe, Wrench, ArrowRight } from 'lucide-react';
 import HeroClock from '../components/hero/HeroClock';
 import PageTransition from '../components/layout/PageTransition';
@@ -55,119 +54,88 @@ const PORTFOLIO_ITEMS = [
 // ─── component ───────────────────────────────────────────────────────────────
 
 export default function Home() {
-  // One-shot intro: runs once per browser session (sessionStorage gate)
-  const [isFirstVisit] = useState(() => {
+  // One-shot intro: plays once per browser session via sessionStorage gate.
+  // On return visits within the same session, heroSkip is added and all
+  // elements reveal instantly with no animation.
+  const [isIntro] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    const seen = sessionStorage.getItem('kairos-intro');
-    if (!seen) {
+    const played = sessionStorage.getItem('kairos-intro');
+    if (!played) {
       sessionStorage.setItem('kairos-intro', '1');
       return true;
     }
     return false;
   });
 
-  const [showIntro, setShowIntro] = useState(isFirstVisit);
-
-  useEffect(() => {
-    if (!isFirstVisit) return;
-    const t = setTimeout(() => setShowIntro(false), 1000);
-    return () => clearTimeout(t);
-  }, [isFirstVisit]);
-
-  // Hero entrance stagger — longer sequence on first visit
-  const d = isFirstVisit
-    ? { logo: 0.4, h1: 1.4, sub: 1.8, ctas: 1.85 }
-    : { logo: 0.05, h1: 0.28, sub: 0.4, ctas: 0.45 };
-
-  // Icon component for featured service
   const FeaturedIcon = SERVICE_FEATURED.icon;
 
   return (
     <PageTransition>
 
-      {/* ── One-shot intro overlay ──────────────────────────────────────────── */}
-      <AnimatePresence>
-        {showIntro && (
-          <motion.div
-            className={styles.introOverlay}
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            aria-hidden="true"
-          >
-            <motion.img
-              src="/kairos-light.png"
-              alt=""
-              className={styles.introLogo}
-              initial={{ opacity: 0, transform: 'scale(0.88)' }}
-              animate={{ opacity: 1, transform: 'scale(1)' }}
-              transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <main id="main-content">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section className={styles.hero} aria-label="Hero" data-cursor-theme="dark">
+        <section
+          className={`${styles.hero} ${isIntro ? '' : styles.heroSkip}`}
+          aria-label="Hero"
+          data-cursor-theme="dark"
+        >
           {/* Background texture layers */}
           <div className={styles.heroGrid}  aria-hidden="true" />
           <div className={styles.heroNoise} aria-hidden="true" />
 
-          {/* Ghost clock — atmospheric, z-index 0, aria-hidden */}
-          <HeroClock />
+          {/* Ghost clock — wrapped for fade-in at step 4 (3200ms) */}
+          <div className={styles.heroClockWrap} aria-hidden="true">
+            <HeroClock />
+          </div>
 
           <div className={styles.heroContent}>
 
-            {/* Logo mark — bare img, no container box, no glow, no border-radius */}
-            <motion.img
+            {/* Step 3 (2400ms): logo fades in — pure opacity, no transform */}
+            <img
               src="/kairos-light.png"
               alt="Kairos"
-              className={styles.heroLogo}
-              initial={{ opacity: 0, transform: 'scale(0.9)' }}
-              animate={{ opacity: 1, transform: 'scale(1)' }}
-              transition={{ duration: 0.8, delay: d.logo, ease: [0.23, 1, 0.32, 1] }}
+              className={styles.introLogo}
             />
 
-            {/* Separator — 80px vertical line */}
-            <motion.div
-              className={styles.heroSeparator}
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 0.45, delay: d.h1 - 0.14, ease: [0.23, 1, 0.32, 1] }}
-              style={{ transformOrigin: 'top' }}
-              aria-hidden="true"
-            />
+            {/* Step 2 (1500ms+): KAIROS types in — 6 spans, 90ms per-letter stagger */}
+            <h1 className={styles.introKairos} aria-label="Kairos">
+              {'KAIROS'.split('').map((letter, i) => (
+                <span
+                  key={i}
+                  className={styles.introLetter}
+                  style={isIntro ? { animationDelay: `${1500 + i * 90}ms` } : undefined}
+                  aria-hidden="true"
+                >
+                  {letter}
+                </span>
+              ))}
+            </h1>
 
-            <motion.h1
-              className={styles.heroHeadline}
-              initial={{ opacity: 0, transform: 'translateY(20px)' }}
-              animate={{ opacity: 1, transform: 'translateY(0px)' }}
-              transition={{ duration: 0.6, delay: d.h1, ease: [0.23, 1, 0.32, 1] }}
-            >
-              We build websites that work.
-            </motion.h1>
+            {/* Step 1 (600ms): tagline clip-path curtain left → right */}
+            <p className={styles.introTagline} aria-label="The pursuit continues">
+              — THE PURSUIT CONTINUES —
+            </p>
 
-            <motion.p
-              className={styles.heroSubline}
-              initial={{ opacity: 0, transform: 'translateY(16px)' }}
-              animate={{ opacity: 1, transform: 'translateY(0px)' }}
-              transition={{ duration: 0.6, delay: d.sub, ease: [0.23, 1, 0.32, 1] }}
-            >
-              Every business in Kanpur deserves a website that actually works.
-            </motion.p>
-
-            <motion.div
-              className={styles.heroCtas}
-              initial={{ opacity: 0, transform: 'translateY(16px)' }}
-              animate={{ opacity: 1, transform: 'translateY(0px)' }}
-              transition={{ duration: 0.6, delay: d.ctas, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <Button as="a" href="/work" variant="filled">See Our Work</Button>
-              <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
-            </motion.div>
+            {/* Step 4 (3200ms): subheadline + CTAs, 60ms stagger between rows */}
+            <div className={styles.heroPostContent}>
+              <div className={styles.heroPostText}>
+                <p className={styles.heroHeadline}>
+                  We build websites that work.
+                </p>
+                <p className={styles.heroSubline}>
+                  Every business in Kanpur deserves a website that actually works.
+                </p>
+              </div>
+              <div className={styles.heroCtas}>
+                <Button as="a" href="/work" variant="filled">See Our Work</Button>
+                <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
+              </div>
+            </div>
           </div>
+
+          {/* Dissolving overlay — #1C352D fades out 0–500ms, pointer-events: none */}
+          <div className={styles.introOverlay} aria-hidden="true" />
 
           <div className={styles.scrollIndicator} aria-hidden="true">
             <ChevronDown size={24} strokeWidth={1.5} />
@@ -202,7 +170,7 @@ export default function Home() {
               </article>
             </ScrollReveal>
 
-            {/* Secondary cards — 2-column grid (Domain & Hosting, Maintenance) */}
+            {/* Secondary cards — 2-column grid */}
             <div className={styles.servicesSecondary}>
               {SERVICES_SECONDARY.map((service, i) => {
                 const Icon = service.icon;

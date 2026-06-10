@@ -1,19 +1,44 @@
-/* ── Intro overlay ─────────────────────────────────────────────────────────── */
-.introOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal);
-  background: var(--color-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
+/* ── Intro keyframes ────────────────────────────────────────────────────────── */
+
+/* Step 0: full-screen overlay dissolves out */
+@keyframes kairos-overlay-dissolve {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
-.introLogo {
-  width: 200px;
-  height: auto;
-  display: block;
+/* Step 1: tagline curtain — inset from right collapses left → right */
+@keyframes kairos-tagline-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0);   }
+}
+
+/* Step 2: individual letter fade-in for typewriter */
+@keyframes kairos-letter-appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Steps 3 & 4 (clock): pure opacity fade */
+@keyframes kairos-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Step 4: subheadline + CTAs — opacity + 12px lift */
+@keyframes kairos-post-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Intro overlay (Step 0) ─────────────────────────────────────────────────── */
+/* Sits above heroContent (z-index 20 > z-elevated 10), dissolves in 500ms */
+.introOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--bg-inverse); /* #1C352D */
+  pointer-events: none;
+  animation: kairos-overlay-dissolve 500ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
@@ -24,7 +49,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Clip the ghost clock SVG cleanly */
   overflow: hidden;
 }
 
@@ -47,6 +71,18 @@
   background-size: 200px 200px;
 }
 
+/* ── Clock wrapper — absolute fill, fades in at step 4 ──────────────────────── */
+/* Wrapping HeroClock preserves its position: absolute; top:50%; left:50%
+   reference since heroClockWrap fills the same bounds as .hero */
+.heroClockWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  animation: kairos-fade-in 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms forwards;
+}
+
 /* ── Hero content ──────────────────────────────────────────────────────────── */
 .heroContent {
   position: relative;
@@ -55,78 +91,204 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: calc(var(--navbar-height) + var(--space-8)) var(--space-4) var(--space-8);
+  /* gap: 0 — spacing managed per element via margin */
+  gap: 0;
+  padding: calc(var(--navbar-height) + var(--space-6)) var(--space-4) var(--space-8);
   max-width: 760px;
-  gap: var(--space-3);
+  width: 100%;
 }
 
 @media (max-width: 480px) {
   .heroContent {
     padding: calc(var(--navbar-height) + var(--space-4)) var(--space-2) var(--space-6);
-    gap: var(--space-2);
   }
 }
 
-/* Logo mark — no wrapper, no box, no glow, no border-radius */
-.heroLogo {
+/* ── Step 3: logo (2400ms, 1000ms duration) ─────────────────────────────────── */
+.introLogo {
   display: block;
   max-width: 200px;
   width: 100%;
   height: auto;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: kairos-fade-in 1000ms cubic-bezier(0.23, 1, 0.32, 1) 2400ms forwards;
 }
 
 @media (max-width: 480px) {
-  .heroLogo {
+  .introLogo {
     max-width: 140px;
   }
 }
 
-/* Vertical separator line — 80px height */
-.heroSeparator {
-  width: 1px;
-  height: 80px;
-  background: rgba(248, 240, 229, 0.2);
-  flex-shrink: 0;
+/* ── Step 2: KAIROS display heading ─────────────────────────────────────────── */
+.introKairos {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  letter-spacing: 0.12em;
+  color: var(--color-cream);
+  line-height: 1;
+  margin-bottom: 16px;
 }
 
-/* H1 — dominant, must command the page */
+@media (max-width: 480px) {
+  .introKairos {
+    font-size: clamp(2.8rem, 10vw, 3.5rem);
+  }
+}
+
+/* Individual letter spans — animationDelay injected inline when isIntro */
+.introLetter {
+  display: inline;
+  opacity: 0;
+  animation: kairos-letter-appear 60ms ease-out forwards;
+}
+
+/* ── Step 1: tagline (600ms delay, 800ms duration) ──────────────────────────── */
+.introTagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  letter-spacing: 0.22em;
+  color: rgba(248, 240, 229, 0.65);
+  text-align: center;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  animation: kairos-tagline-reveal 800ms cubic-bezier(0.77, 0, 0.175, 1) 600ms forwards;
+}
+
+@media (max-width: 480px) {
+  .introTagline {
+    font-size: clamp(0.65rem, 3vw, 0.85rem);
+    letter-spacing: 0.14em;
+    white-space: normal;
+  }
+}
+
+/* ── Step 4: post-intro content block ──────────────────────────────────────── */
+.heroPostContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+  width: 100%;
+}
+
+/* Subheadline group — opacity + 12px lift, 3200ms */
+.heroPostText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+  opacity: 0;
+  animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms forwards;
+}
+
+/* Value prop line — Cardo italic, subordinate to KAIROS */
 .heroHeadline {
-  font-size: var(--text-hero); /* clamp(3rem, 7vw, 6rem) */
-  color: var(--text-on-dark);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: rgba(248, 240, 229, 0.9);
   text-wrap: balance;
-  line-height: 1.08;
+  text-align: center;
 }
 
 .heroSubline {
   font-family: var(--font-body);
-  font-size: clamp(1rem, 2vw, 1.125rem);
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
   font-weight: 400;
   color: var(--color-green-pale);
   max-width: 48ch;
+  text-align: center;
 }
 
+/* CTAs — same reveal, 60ms stagger after heroPostText (3260ms) */
 .heroCtas {
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: var(--space-1);
+  opacity: 0;
+  animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3260ms forwards;
 }
 
-/* Bouncing scroll caret */
+/* ── Scroll indicator — fades in at 3200ms, then bobs indefinitely ──────────── */
 .scrollIndicator {
   position: absolute;
   bottom: var(--space-4);
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-on-dark);
-  opacity: 0.45;
-  animation: bob 2s ease-in-out infinite;
+  opacity: 0;
+  animation:
+    kairos-fade-in 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms 1 normal forwards,
+    bob 2s ease-in-out 3800ms infinite normal none;
 }
 
 @keyframes bob {
   0%, 100% { transform: translateX(-50%) translateY(0);   }
   50%       { transform: translateX(-50%) translateY(7px); }
+}
+
+/* ── Skip state: return visits within same session ──────────────────────────── */
+/* heroSkip is applied when sessionStorage shows the intro already played.
+   Every animated element reveals instantly with no animation. */
+.heroSkip .introOverlay {
+  display: none !important;
+}
+
+.heroSkip .introLogo,
+.heroSkip .introTagline,
+.heroSkip .heroPostText,
+.heroSkip .heroCtas,
+.heroSkip .heroClockWrap {
+  opacity: 1 !important;
+  animation: none !important;
+  clip-path: none !important;
+  transform: none !important;
+}
+
+.heroSkip .introLetter {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.heroSkip .scrollIndicator {
+  opacity: 0.45 !important;
+  animation: bob 2s ease-in-out infinite !important;
+}
+
+/* ── Reduced motion accessibility ───────────────────────────────────────────── */
+/* Mirrors skip state: all content visible instantly, only bob is preserved */
+@media (prefers-reduced-motion: reduce) {
+  .introOverlay { display: none !important; }
+
+  .introLogo,
+  .introTagline,
+  .heroPostText,
+  .heroCtas,
+  .heroClockWrap {
+    opacity: 1 !important;
+    animation: none !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+
+  .introLetter {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .scrollIndicator {
+    opacity: 0.45 !important;
+    animation: bob 2s ease-in-out infinite !important;
+  }
 }
 
 /* ── Shared section helpers ─────────────────────────────────────────────────── */
@@ -169,7 +331,6 @@
   border: 1px solid var(--border-subtle);
   border-radius: 2px;
   margin-bottom: var(--space-4);
-  /* Use full available width — visually distinct from secondary cards */
   transition:
     background-color 200ms var(--ease-out),
     border-color 200ms var(--ease-out);
@@ -191,7 +352,7 @@
 
 .serviceFeaturedDesc {
   font-family: var(--font-body);
-  font-size: var(--text-body); /* clamp(1rem, 2vw, 1.125rem) */
+  font-size: var(--text-body);
   color: var(--text-muted);
   max-width: 60ch;
   transition: color 200ms var(--ease-out);
@@ -215,7 +376,6 @@
 }
 
 /* ── Secondary services — 2-column grid ──────────────────────────────────── */
-/* Two cards in a row. NEVER three identical — banned. */
 .servicesSecondary {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -228,7 +388,6 @@
   }
 }
 
-/* Individual secondary service card */
 .serviceItem {
   display: flex;
   flex-direction: column;
@@ -259,7 +418,6 @@
   }
 }
 
-/* Shared icon + title row */
 .serviceHeader {
   display: flex;
   align-items: center;
@@ -285,11 +443,10 @@
   font-size: var(--text-body);
   color: var(--text-muted);
   max-width: 45ch;
-  flex: 1; /* grows so "Learn more" is pushed to bottom */
+  flex: 1;
   transition: color 200ms var(--ease-out);
 }
 
-/* "Learn more →" link — auto-margin pushes it to the bottom */
 .serviceLink {
   display: inline-flex;
   align-items: center;
@@ -328,7 +485,7 @@
 .quoteText {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: var(--text-quote); /* clamp(1.6rem, 3.5vw, 2.8rem) */
+  font-size: var(--text-quote);
   color: var(--text-on-dark);
   text-wrap: balance;
   max-width: 820px;
@@ -363,7 +520,6 @@
   padding: var(--section-y) 0;
 }
 
-/* Portfolio section h2 has no eyebrow above it — heading stands alone */
 .portfolio .sectionHeading {
   margin-bottom: var(--space-6);
 }
@@ -418,7 +574,6 @@
   opacity: 0.6;
 }
 
-/* "Coming Soon" pulsing label */
 .comingSoonPulse {
   font-family: var(--font-body);
   font-size: 0.8125rem;
@@ -434,7 +589,6 @@
   50%       { opacity: 1;   }
 }
 
-/* Hover overlay — reveals on hover */
 .portfolioOverlay {
   position: absolute;
   inset: 0;
