@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/services', label: 'Services' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
+  { to: '/faq', label: 'FAQ' },
 ];
 
 export default function Footer() {
@@ -17,12 +18,15 @@ export default function Footer() {
       <div className={styles.gridOverlay} aria-hidden="true" />
 
       <div className={styles.inner}>
-        {/* Footer is on dark bg — use cream (light) mark */}
-        <img
-          src="/kairos-light.png"
-          alt="Kairos"
-          className={styles.logo}
-        />
+        <div className={styles.logoGroup}>
+          <img
+            src="/kairos-mark-light.png"
+            alt="Kairos"
+            className={styles.logo}
+          />
+          <p className={styles.logoName}>KAIROS</p>
+          <p className={styles.tagline}>— THE PURSUIT CONTINUES —</p>
+        </div>
 
         <nav aria-label="Footer navigation" className={styles.nav}>
           {NAV_LINKS.map(({ to, label }) => (
@@ -31,8 +35,6 @@ export default function Footer() {
             </NavLink>
           ))}
         </nav>
-
-        <p className={styles.tagline}>THE PURSUIT CONTINUES</p>
 
         <div className={styles.contact}>
           <a

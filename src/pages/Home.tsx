@@ -93,7 +93,7 @@ export default function Home() {
 
             {/* Step 3 (2400ms): logo fades in — pure opacity, no transform */}
             <img
-              src="/kairos-light.png"
+              src="/kairos-mark-light.png"
               alt="Kairos"
               className={styles.introLogo}
             />
@@ -124,11 +124,13 @@ export default function Home() {
                   We build websites that work.
                 </p>
                 <p className={styles.heroSubline}>
-                  Every business in Kanpur deserves a website that actually works.
+                  Every business deserves a website that actually works.
                 </p>
               </div>
               <div className={styles.heroCtas}>
-                <Button as="a" href="/work" variant="filled">See Our Work</Button>
+                <span style={{ display: 'contents' }} data-cursor-force="dark">
+                  <Button as="a" href="/work" variant="filled">See Our Work</Button>
+                </span>
                 <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
               </div>
             </div>
@@ -158,7 +160,7 @@ export default function Home() {
 
             {/* Featured card — Website Design, full-width */}
             <ScrollReveal>
-              <article className={styles.serviceFeatured}>
+              <article className={styles.serviceFeatured} data-cursor-force="light">
                 <div className={styles.serviceHeader}>
                   <FeaturedIcon size={22} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
                   <h3 className={styles.serviceFeaturedTitle}>{SERVICE_FEATURED.title}</h3>
@@ -176,7 +178,7 @@ export default function Home() {
                 const Icon = service.icon;
                 return (
                   <ScrollReveal key={service.title} delay={i * 0.05}>
-                    <article className={styles.serviceItem}>
+                    <article className={styles.serviceItem} data-cursor-force="light">
                       <div className={styles.serviceHeader}>
                         <Icon size={18} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
                         <h3 className={styles.serviceTitle}>{service.title}</h3>

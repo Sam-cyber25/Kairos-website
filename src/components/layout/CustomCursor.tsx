@@ -43,6 +43,11 @@ class KairosCursor {
         'cursor--dark',
         !!(under as Element | null)?.closest('[data-cursor-theme="dark"]'),
       );
+      // Element-level force overrides section-level theme detection.
+      const forceEl = (under as Element | null)?.closest('[data-cursor-force]');
+      const force   = forceEl?.getAttribute('data-cursor-force') ?? null;
+      this.el.classList.toggle('cursor--force-dark',  force === 'dark');
+      this.el.classList.toggle('cursor--force-light', force === 'light');
     }, { passive: true });
 
     this.on(document, 'mouseleave', () => this.el.classList.remove('cursor--on'));

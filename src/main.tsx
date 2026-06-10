@@ -7,6 +7,7 @@ import Work from './pages/Work.tsx';
 import Services from './pages/Services.tsx';
 import About from './pages/About.tsx';
 import Contact from './pages/Contact.tsx';
+import Faq from './pages/Faq.tsx';
 import './styles/globals.css';
 
 const router = createBrowserRouter(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
         { path: 'services', element: <Services /> },
         { path: 'about', element: <About /> },
         { path: 'contact', element: <Contact /> },
+        { path: 'faq', element: <Faq /> },
       ],
     },
   ],

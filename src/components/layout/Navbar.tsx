@@ -57,12 +57,12 @@ export default function Navbar() {
                 kairos-dark.png = deep green mark → use on CREAM (light) backgrounds
                 kairos-light.png = cream mark       → use on DARK GREEN backgrounds */}
             <img
-              src="/kairos-dark.png"
+              src="/kairos-mark-dark.png"
               alt="Kairos"
               className={`${styles.logoImg} ${styles.logoDark}`}
             />
             <img
-              src="/kairos-light.png"
+              src="/kairos-mark-light.png"
               alt=""
               aria-hidden="true"
               className={`${styles.logoImg} ${styles.logoLight}`}

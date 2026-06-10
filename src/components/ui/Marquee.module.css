@@ -13,7 +13,7 @@
 .track {
   display: flex;
   width: max-content;
-  animation: scroll 30s linear infinite;
+  animation: scroll 28s linear infinite;
 }
 
 .text {
@@ -32,6 +32,12 @@
   border-bottom: 1px solid var(--border-subtle);
   padding: var(--space-2) var(--space-4);
   text-align: center;
+}
+
+@media (max-width: 640px) {
+  .track {
+    animation-duration: 20s;
+  }
 }
 
 @keyframes scroll {

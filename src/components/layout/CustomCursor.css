@@ -47,6 +47,10 @@
   .cursor--on   { opacity: 1; }
   .cursor--dark { color: #F8F0E5; }
 
+  /* Element-level force overrides section-level dark/light detection */
+  .cursor--force-dark  { color: #1C352D !important; }
+  .cursor--force-light { color: #F8F0E5 !important; }
+
   /* ── Both children share the same hot-point centering ─────────────────── */
   .cursor__dot,
   .cursor__bolt {

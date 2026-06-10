@@ -107,7 +107,7 @@
 /* ── Step 3: logo (2400ms, 1000ms duration) ─────────────────────────────────── */
 .introLogo {
   display: block;
-  max-width: 200px;
+  max-width: 180px;
   width: 100%;
   height: auto;
   margin-bottom: 20px;
@@ -117,7 +117,7 @@
 
 @media (max-width: 480px) {
   .introLogo {
-    max-width: 140px;
+    max-width: 130px;
   }
 }
 
@@ -134,7 +134,7 @@
 
 @media (max-width: 480px) {
   .introKairos {
-    font-size: clamp(2.8rem, 10vw, 3.5rem);
+    font-size: clamp(2.4rem, 9vw, 3.2rem);
   }
 }
 
@@ -162,7 +162,7 @@
 @media (max-width: 480px) {
   .introTagline {
     font-size: clamp(0.65rem, 3vw, 0.85rem);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     white-space: normal;
   }
 }
@@ -188,13 +188,15 @@
   animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms forwards;
 }
 
-/* Value prop line — Cardo italic, subordinate to KAIROS */
+/* Value prop line — Cardo bold, dominant statement */
 .heroHeadline {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  color: rgba(248, 240, 229, 0.9);
+  font-style: normal;
+  font-weight: 700;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #F8F0E5;
   text-wrap: balance;
   text-align: center;
 }
@@ -307,7 +309,8 @@
 /* Section h2 — dominant statement */
 .sectionHeading {
   font-family: var(--font-display);
-  font-size: var(--text-h2); /* clamp(2.25rem, 5vw, 4rem) */
+  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  letter-spacing: -0.02em;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.1;
