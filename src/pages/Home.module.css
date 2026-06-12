@@ -1,42 +1,37 @@
 /* ── Intro keyframes ────────────────────────────────────────────────────────── */
 
-/* Step 0: full-screen overlay dissolves out */
 @keyframes kairos-overlay-dissolve {
   from { opacity: 1; }
   to   { opacity: 0; }
 }
 
-/* Step 1: tagline curtain — inset from right collapses left → right */
 @keyframes kairos-tagline-reveal {
   from { clip-path: inset(0 100% 0 0); }
   to   { clip-path: inset(0 0% 0 0);   }
 }
 
-/* Step 2: individual letter fade-in for typewriter */
+/* Letters arrive with a 4px lift for weight — not just a fade */
 @keyframes kairos-letter-appear {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
-/* Steps 3 & 4 (clock): pure opacity fade */
 @keyframes kairos-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* Step 4: subheadline + CTAs — opacity + 12px lift */
 @keyframes kairos-post-reveal {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
 
 /* ── Intro overlay (Step 0) ─────────────────────────────────────────────────── */
-/* Sits above heroContent (z-index 20 > z-elevated 10), dissolves in 500ms */
 .introOverlay {
   position: absolute;
   inset: 0;
   z-index: 20;
-  background: var(--bg-inverse); /* #1C352D */
+  background: var(--bg-inverse);
   pointer-events: none;
   animation: kairos-overlay-dissolve 500ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
@@ -71,9 +66,7 @@
   background-size: 200px 200px;
 }
 
-/* ── Clock wrapper — absolute fill, fades in at step 4 ──────────────────────── */
-/* Wrapping HeroClock preserves its position: absolute; top:50%; left:50%
-   reference since heroClockWrap fills the same bounds as .hero */
+/* Ghost clock wrapper — fades in at step 4 (3200ms) */
 .heroClockWrap {
   position: absolute;
   inset: 0;
@@ -91,7 +84,6 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  /* gap: 0 — spacing managed per element via margin */
   gap: 0;
   padding: calc(var(--navbar-height) + var(--space-6)) var(--space-4) var(--space-8);
   max-width: 760px;
@@ -104,7 +96,7 @@
   }
 }
 
-/* ── Step 3: logo (2400ms, 1000ms duration) ─────────────────────────────────── */
+/* ── Step 3: logo (2400ms) ───────────────────────────────────────────────────── */
 .introLogo {
   display: block;
   width: 240px !important;
@@ -139,14 +131,14 @@
   }
 }
 
-/* Individual letter spans — animationDelay injected inline when isIntro */
+/* inline-block required for the translateY on each letter */
 .introLetter {
-  display: inline;
+  display: inline-block;
   opacity: 0;
   animation: kairos-letter-appear 60ms ease-out forwards;
 }
 
-/* ── Step 1: tagline (600ms delay, 800ms duration) ──────────────────────────── */
+/* ── Step 1: tagline curtain (600ms) ────────────────────────────────────────── */
 .introTagline {
   font-family: var(--font-display);
   font-style: italic;
@@ -168,7 +160,7 @@
   }
 }
 
-/* ── Step 4: post-intro content block ──────────────────────────────────────── */
+/* ── Step 4: headline + CTAs (3200ms) ──────────────────────────────────────── */
 .heroPostContent {
   display: flex;
   flex-direction: column;
@@ -178,7 +170,6 @@
   width: 100%;
 }
 
-/* Subheadline group — opacity + 12px lift, 3200ms */
 .heroPostText {
   display: flex;
   flex-direction: column;
@@ -189,13 +180,13 @@
   animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms forwards;
 }
 
-/* Value prop line — Cardo bold, dominant statement */
+/* -0.03em tracking at display size — intentional tightening */
 .heroHeadline {
   font-family: var(--font-display);
   font-style: normal;
   font-weight: 700;
   font-size: clamp(3rem, 7vw, 5.5rem);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   line-height: 1.1;
   color: #F8F0E5;
   text-wrap: balance;
@@ -211,7 +202,6 @@
   text-align: center;
 }
 
-/* CTAs — same reveal, 60ms stagger after heroPostText (3260ms) */
 .heroCtas {
   display: flex;
   gap: var(--space-2);
@@ -221,7 +211,7 @@
   animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3260ms forwards;
 }
 
-/* ── Scroll indicator — fades in at 3200ms, then bobs indefinitely ──────────── */
+/* ── Scroll indicator — fades in at 3200ms, bobs indefinitely ───────────────── */
 .scrollIndicator {
   position: absolute;
   bottom: var(--space-4);
@@ -239,12 +229,8 @@
   50%       { transform: translateX(-50%) translateY(7px); }
 }
 
-/* ── Skip state: return visits within same session ──────────────────────────── */
-/* heroSkip is applied when sessionStorage shows the intro already played.
-   Every animated element reveals instantly with no animation. */
-.heroSkip .introOverlay {
-  display: none !important;
-}
+/* ── Skip state — return visits within same session ─────────────────────────── */
+.heroSkip .introOverlay { display: none !important; }
 
 .heroSkip .introLogo,
 .heroSkip .introTagline,
@@ -267,8 +253,7 @@
   animation: bob 2s ease-in-out infinite !important;
 }
 
-/* ── Reduced motion accessibility ───────────────────────────────────────────── */
-/* Mirrors skip state: all content visible instantly, only bob is preserved */
+/* ── Reduced motion ─────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .introOverlay { display: none !important; }
 
@@ -307,7 +292,6 @@
   }
 }
 
-/* Section h2 — dominant statement */
 .sectionHeading {
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 5.5vw, 4.2rem);
@@ -320,170 +304,134 @@
   margin-bottom: var(--space-6);
 }
 
-/* ── Services ──────────────────────────────────────────────────────────────── */
+/* ── Services — editorial numbered list ─────────────────────────────────────── */
 .services {
   background: var(--bg-primary);
   padding: var(--section-y) 0;
 }
 
-/* ── Featured service (Website Design) — full-width card ─────────────────── */
-.serviceFeatured {
+.services .sectionHeading {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.serviceList {
+  margin-top: var(--space-6);
+}
+
+.serviceRow {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: start;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(28, 53, 45, 0.12);
+  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: default;
+}
+
+.serviceRow:first-child {
+  border-top: 1px solid rgba(28, 53, 45, 0.12);
+}
+
+.serviceNum {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: rgba(28, 53, 45, 0.2);
+  line-height: 1;
+  padding-top: 4px;
+  transition: color 150ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+}
+
+.serviceBody {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-6) var(--space-6);
-  border: 1px solid var(--border-subtle);
-  border-radius: 2px;
-  margin-bottom: var(--space-4);
-  transition:
-    background-color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out);
+  gap: 10px;
+  padding-right: 32px;
 }
 
-@media (max-width: 768px) {
-  .serviceFeatured {
-    padding: var(--space-4) var(--space-3);
-  }
-}
-
-.serviceFeaturedTitle {
+.serviceRowTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
   color: var(--text-primary);
-  text-wrap: balance;
-  transition: color 200ms var(--ease-out);
+  line-height: 1.15;
 }
 
-.serviceFeaturedDesc {
+.serviceRowDesc {
   font-family: var(--font-body);
-  font-size: var(--text-body);
-  color: var(--text-muted);
-  max-width: 60ch;
-  transition: color 200ms var(--ease-out);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(28, 53, 45, 0.7);
+  max-width: 55ch;
+}
+
+.serviceArrow {
+  font-size: 1.5rem;
+  color: rgba(28, 53, 45, 0.35);
+  padding-top: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition:
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .serviceFeatured:hover {
-    background-color: var(--bg-inverse);
-    border-color: transparent;
+  .serviceRow:hover {
+    background: rgba(28, 53, 45, 0.04);
   }
 
-  .serviceFeatured:hover .serviceFeaturedTitle,
-  .serviceFeatured:hover .serviceFeaturedDesc,
-  .serviceFeatured:hover .serviceIcon {
-    color: var(--text-on-dark);
+  .serviceRow:hover .serviceNum {
+    color: rgba(28, 53, 45, 0.6);
   }
 
-  .serviceFeatured:hover .serviceLink {
-    color: var(--color-green-pale);
+  .serviceRow:hover .serviceArrow {
+    transform: translateX(6px);
+    color: rgba(28, 53, 45, 0.65);
   }
-}
-
-/* ── Secondary services — 2-column grid ──────────────────────────────────── */
-.servicesSecondary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
 }
 
 @media (max-width: 640px) {
-  .servicesSecondary {
+  .serviceRow {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .serviceArrow {
+    display: none;
+  }
+
+  .serviceNum {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .serviceBody {
+    padding-right: 0;
   }
 }
 
-.serviceItem {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-4);
-  border: 1px solid var(--border-subtle);
-  border-radius: 2px;
-  align-items: flex-start;
-  transition:
-    background-color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .serviceItem:hover {
-    background-color: var(--bg-inverse);
-    border-color: transparent;
-  }
-
-  .serviceItem:hover .serviceTitle,
-  .serviceItem:hover .serviceDesc,
-  .serviceItem:hover .serviceIcon {
-    color: var(--text-on-dark);
-  }
-
-  .serviceItem:hover .serviceLink {
-    color: var(--color-green-pale);
-  }
-}
-
-.serviceHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.serviceIcon {
-  color: var(--color-green-mid);
-  flex-shrink: 0;
-  transition: color 200ms var(--ease-out);
-}
-
-.serviceTitle {
-  font-family: var(--font-display);
-  font-size: var(--text-h3);
-  color: var(--text-primary);
-  text-wrap: balance;
-  transition: color 200ms var(--ease-out);
-}
-
-.serviceDesc {
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  color: var(--text-muted);
-  max-width: 45ch;
-  flex: 1;
-  transition: color 200ms var(--ease-out);
-}
-
-.serviceLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--color-green-mid);
-  transition:
-    color 200ms var(--ease-out),
-    gap 200ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .serviceLink:hover {
-    gap: 10px;
-  }
-}
-
-/* ── Quote ─────────────────────────────────────────────────────────────────── */
+/* ── Quote — clip-path curtain reveal ──────────────────────────────────────── */
 .quote {
   background: var(--bg-deep);
   padding: var(--section-y) 0;
 }
 
-.quote .sectionContainer {
+.quoteInner {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: var(--space-4);
+}
+
+.quoteRevealWrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .quoteText {
@@ -524,14 +472,26 @@
   padding: var(--section-y) 0;
 }
 
+.portfolioEyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(28, 53, 45, 0.5);
+  margin-bottom: 12px;
+}
+
 .portfolio .sectionHeading {
+  margin-top: 0;
   margin-bottom: var(--space-6);
 }
 
 .portfolioGrid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: var(--space-4);
+  gap: 24px;
 }
 
 @media (max-width: 768px) {
@@ -551,6 +511,7 @@
   overflow: hidden;
   border-radius: 2px;
   aspect-ratio: 16 / 9;
+  transition: box-shadow 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .featured .portfolioImageWrap {
@@ -564,7 +525,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 200ms var(--ease-out);
+  transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .comingSoon .portfolioPlaceholder {
@@ -572,10 +533,11 @@
 }
 
 .placeholderText {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 500;
   color: var(--text-on-dark);
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .comingSoonPulse {
@@ -585,24 +547,29 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-green-pale);
-  animation: pulse-text 2.4s ease-in-out infinite;
+  animation: pulse-text 3s ease-in-out infinite;
 }
 
 @keyframes pulse-text {
   0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
+  50%       { opacity: 0.9; }
 }
 
+/* Bottom-gradient overlay — text slides up on hover */
 .portfolioOverlay {
   position: absolute;
-  inset: 0;
-  background: rgba(15, 30, 24, 0.72);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: linear-gradient(transparent, rgba(15, 30, 24, 0.85));
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 0 16px 16px;
   opacity: 0;
-  transition: opacity 200ms var(--ease-out);
+  transition: opacity 250ms cubic-bezier(0.23, 1, 0.32, 1);
   color: var(--text-on-dark);
   font-family: var(--font-body);
   font-size: 0.875rem;
@@ -610,13 +577,27 @@
   letter-spacing: 0.08em;
 }
 
+.viewLabel {
+  font-family: var(--font-body);
+  transform: translateY(4px);
+  transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 @media (hover: hover) and (pointer: fine) {
+  .portfolioItem:hover .portfolioImageWrap {
+    box-shadow: 0 8px 32px rgba(28, 53, 45, 0.12);
+  }
+
   .portfolioItem:hover .portfolioPlaceholder {
     transform: scale(1.02);
   }
 
   .portfolioItem:hover .portfolioOverlay {
     opacity: 1;
+  }
+
+  .portfolioItem:hover .viewLabel {
+    transform: translateY(0);
   }
 }
 
@@ -648,10 +629,6 @@
   padding: 3px var(--space-1);
   border: 1px solid var(--border-subtle);
   border-radius: 2px;
-}
-
-.viewLabel {
-  font-family: var(--font-body);
 }
 
 .allWork {

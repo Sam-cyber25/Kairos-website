@@ -96,12 +96,22 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-on-dark);
-  padding-bottom: 2px;
-  border-bottom: 1px solid transparent;
+  position: relative;
+  padding-bottom: 3px;
   touch-action: manipulation;
-  transition:
-    color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out);
+  transition: color 200ms var(--ease-out);
+}
+
+/* Underline grows left → right on hover/active */
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .navbar.scrolled .navLink,
@@ -110,18 +120,29 @@
 }
 
 .navLink.active {
-  border-bottom-color: var(--color-green-mid);
   color: var(--text-primary);
 }
 
+.navLink.active::after {
+  width: 100%;
+  background: var(--color-green-mid);
+}
+
 .navbar.onHero .navLink.active {
-  border-bottom-color: var(--color-cream);
   color: var(--text-on-dark);
+}
+
+.navbar.onHero .navLink.active::after {
+  background: var(--color-cream);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .navLink:hover {
     color: var(--text-primary);
+  }
+
+  .navLink:hover::after {
+    width: 100%;
   }
 
   .navbar.onHero .navLink:hover {

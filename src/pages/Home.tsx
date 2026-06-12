@@ -1,31 +1,33 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Palette, Globe, Wrench, ArrowRight } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
+import { motion, useSpring } from 'framer-motion';
 import HeroClock from '../components/hero/HeroClock';
 import PageTransition from '../components/layout/PageTransition';
 import Button from '../components/ui/Button';
 import Marquee from '../components/ui/Marquee';
 import ScrollReveal from '../components/ui/ScrollReveal';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import styles from './Home.module.css';
 
 // ─── data ────────────────────────────────────────────────────────────────────
 
-const SERVICE_FEATURED = {
-  icon: Palette,
-  title: 'Website Design',
-  description:
-    'Every layout is designed from scratch for your specific business. What works for a coaching institute in Kanpur is different from what works for a restaurant.',
-};
-
-const SERVICES_SECONDARY = [
+const SERVICE_ITEMS = [
   {
-    icon: Globe,
+    num: '01',
+    title: 'Website Design',
+    description:
+      'Every layout is designed from scratch for your specific business. What works for a coaching institute is different from what works for a restaurant.',
+  },
+  {
+    num: '02',
     title: 'Domain & Hosting',
     description:
       'We get your site live on a real domain, with SSL and Vercel hosting sorted. Usually within a day.',
   },
   {
-    icon: Wrench,
+    num: '03',
     title: 'Ongoing Maintenance',
     description:
       "Content updates, performance checks, and small design fixes every month. You don't have to think about it.",
@@ -51,12 +53,89 @@ const PORTFOLIO_ITEMS = [
   },
 ];
 
+// ─── Magnetic CTA wrapper (Emil spring mouse interaction) ─────────────────────
+
+interface MagneticCTAProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+function MagneticCTA({ children, ...rest }: MagneticCTAProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const x = useSpring(0, { stiffness: 150, damping: 15 });
+  const y = useSpring(0, { stiffness: 150, damping: 15 });
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (reducedMotion) return;
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      x.set(((e.clientX - (rect.left + rect.width / 2)) / rect.width) * 8);
+      y.set(((e.clientY - (rect.top + rect.height / 2)) / rect.height) * 8);
+    },
+    [x, y, reducedMotion],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    x.set(0);
+    y.set(0);
+  }, [x, y]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ x, y }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...rest}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ─── Animated service row (slide from left, staggered) ────────────────────────
+
+interface ServiceRowProps {
+  num: string;
+  title: string;
+  description: string;
+  index: number;
+}
+
+function ServiceRow({ num, title, description, index }: ServiceRowProps) {
+  const [rowRef, rowVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.15 });
+  const reducedMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      ref={rowRef}
+      className={styles.serviceRow}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, transform: 'translateX(-12px)' }}
+      animate={
+        rowVisible
+          ? { opacity: 1, transform: 'translateX(0px)' }
+          : reducedMotion
+          ? { opacity: 0 }
+          : { opacity: 0, transform: 'translateX(-12px)' }
+      }
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.23, 1, 0.32, 1] }}
+    >
+      <span className={styles.serviceNum} aria-hidden="true">{num}</span>
+      <div className={styles.serviceBody}>
+        <h3 className={styles.serviceRowTitle}>{title}</h3>
+        <p className={styles.serviceRowDesc}>{description}</p>
+      </div>
+      <span className={styles.serviceArrow} aria-hidden="true">→</span>
+    </motion.div>
+  );
+}
+
 // ─── component ───────────────────────────────────────────────────────────────
 
 export default function Home() {
   // One-shot intro: plays once per browser session via sessionStorage gate.
-  // On return visits within the same session, heroSkip is added and all
-  // elements reveal instantly with no animation.
   const [isIntro] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const played = sessionStorage.getItem('kairos-intro');
@@ -67,7 +146,8 @@ export default function Home() {
     return false;
   });
 
-  const FeaturedIcon = SERVICE_FEATURED.icon;
+  const [quoteRef, quoteVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+  const reducedMotion = useReducedMotion();
 
   return (
     <PageTransition>
@@ -80,25 +160,24 @@ export default function Home() {
           aria-label="Hero"
           data-cursor-theme="dark"
         >
-          {/* Background texture layers */}
           <div className={styles.heroGrid}  aria-hidden="true" />
           <div className={styles.heroNoise} aria-hidden="true" />
 
-          {/* Ghost clock — wrapped for fade-in at step 4 (3200ms) */}
+          {/* Ghost clock — fades in at step 4 (3200ms) */}
           <div className={styles.heroClockWrap} aria-hidden="true">
             <HeroClock />
           </div>
 
           <div className={styles.heroContent}>
 
-            {/* Step 3 (2400ms): logo fades in — pure opacity, no transform */}
+            {/* Step 3 (2400ms): logo */}
             <img
               src="/kairos-mark-light.png"
               alt="Kairos"
               className={styles.introLogo}
             />
 
-            {/* Step 2 (1500ms+): KAIROS types in — 6 spans, 90ms per-letter stagger */}
+            {/* Step 2 (1500ms+): KAIROS typewriter — letters arrive with translateY */}
             <h1 className={styles.introKairos} aria-label="Kairos">
               {'KAIROS'.split('').map((letter, i) => (
                 <span
@@ -112,12 +191,12 @@ export default function Home() {
               ))}
             </h1>
 
-            {/* Step 1 (600ms): tagline clip-path curtain left → right */}
+            {/* Step 1 (600ms): tagline curtain left → right */}
             <p className={styles.introTagline} aria-label="The pursuit continues">
               — THE PURSUIT CONTINUES —
             </p>
 
-            {/* Step 4 (3200ms): subheadline + CTAs, 60ms stagger between rows */}
+            {/* Step 4 (3200ms): subheadline + CTAs */}
             <div className={styles.heroPostContent}>
               <div className={styles.heroPostText}>
                 <p className={styles.heroHeadline}>
@@ -128,15 +207,17 @@ export default function Home() {
                 </p>
               </div>
               <div className={styles.heroCtas}>
-                <span style={{ display: 'contents' }} data-cursor-force="dark">
+                <MagneticCTA data-cursor-force="dark">
                   <Button as="a" href="/work" variant="filled">See Our Work</Button>
-                </span>
-                <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
+                </MagneticCTA>
+                <MagneticCTA>
+                  <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
+                </MagneticCTA>
               </div>
             </div>
           </div>
 
-          {/* Dissolving overlay — #1C352D fades out 0–500ms, pointer-events: none */}
+          {/* Dissolving overlay — fades out 0–500ms */}
           <div className={styles.introOverlay} aria-hidden="true" />
 
           <div className={styles.scrollIndicator} aria-hidden="true">
@@ -148,49 +229,18 @@ export default function Home() {
         <Marquee />
 
         {/* ── Services ─────────────────────────────────────────────────────── */}
-        {/* MAX ONE eyebrow on this page — it lives here */}
         <section className={styles.services} aria-labelledby="services-heading">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
-              <span className="eyebrow">What We Do</span>
               <h2 className={styles.sectionHeading} id="services-heading">
                 We do three things.<br />We do them well.
               </h2>
             </ScrollReveal>
 
-            {/* Featured card — Website Design, full-width */}
-            <ScrollReveal>
-              <article className={styles.serviceFeatured} data-cursor-force="light">
-                <div className={styles.serviceHeader}>
-                  <FeaturedIcon size={22} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
-                  <h3 className={styles.serviceFeaturedTitle}>{SERVICE_FEATURED.title}</h3>
-                </div>
-                <p className={styles.serviceFeaturedDesc}>{SERVICE_FEATURED.description}</p>
-                <Link to="/services" className={styles.serviceLink} style={{ touchAction: 'manipulation' }}>
-                  Learn more <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
-                </Link>
-              </article>
-            </ScrollReveal>
-
-            {/* Secondary cards — 2-column grid */}
-            <div className={styles.servicesSecondary}>
-              {SERVICES_SECONDARY.map((service, i) => {
-                const Icon = service.icon;
-                return (
-                  <ScrollReveal key={service.title} delay={i * 0.05}>
-                    <article className={styles.serviceItem} data-cursor-force="light">
-                      <div className={styles.serviceHeader}>
-                        <Icon size={18} strokeWidth={2} className={styles.serviceIcon} aria-hidden="true" />
-                        <h3 className={styles.serviceTitle}>{service.title}</h3>
-                      </div>
-                      <p className={styles.serviceDesc}>{service.description}</p>
-                      <Link to="/services" className={styles.serviceLink} style={{ touchAction: 'manipulation' }}>
-                        Learn more <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
-                      </Link>
-                    </article>
-                  </ScrollReveal>
-                );
-              })}
+            <div className={styles.serviceList} role="list">
+              {SERVICE_ITEMS.map((item, i) => (
+                <ServiceRow key={item.num} index={i} {...item} />
+              ))}
             </div>
           </div>
         </section>
@@ -198,15 +248,37 @@ export default function Home() {
         {/* ── Quote ────────────────────────────────────────────────────────── */}
         <section className={styles.quote} aria-label="Agency quote" data-cursor-theme="dark">
           <div className={styles.sectionContainer}>
-            <ScrollReveal>
-              <blockquote className={styles.quoteText}>
-                "We don't just build websites. We build the version of your business the internet sees."
-              </blockquote>
-              <Link to="/about" className={styles.quoteLink} style={{ touchAction: 'manipulation' }}>
-                Our Story
-                <ArrowRight size={16} strokeWidth={2} className={styles.quoteArrow} aria-hidden="true" />
-              </Link>
-            </ScrollReveal>
+            <div className={styles.quoteInner}>
+              {/* Clip-path curtain reveal — the quote is unveiled, not faded */}
+              <div ref={quoteRef} className={styles.quoteRevealWrap}>
+                <motion.blockquote
+                  className={styles.quoteText}
+                  initial={reducedMotion ? { opacity: 0 } : { clipPath: 'inset(0 100% 0 0)' }}
+                  animate={
+                    quoteVisible
+                      ? reducedMotion
+                        ? { opacity: 1 }
+                        : { clipPath: 'inset(0 0% 0 0)' }
+                      : reducedMotion
+                      ? { opacity: 0 }
+                      : {}
+                  }
+                  transition={
+                    reducedMotion
+                      ? { duration: 0.15 }
+                      : { duration: 0.9, ease: [0.77, 0, 0.175, 1] }
+                  }
+                >
+                  "We don't just build websites. We build the version of your business the internet sees."
+                </motion.blockquote>
+              </div>
+              <ScrollReveal delay={0.15}>
+                <Link to="/about" className={styles.quoteLink} style={{ touchAction: 'manipulation' }}>
+                  Our Story
+                  <ArrowRight size={16} strokeWidth={2} className={styles.quoteArrow} aria-hidden="true" />
+                </Link>
+              </ScrollReveal>
+            </div>
           </div>
         </section>
 
@@ -214,7 +286,7 @@ export default function Home() {
         <section className={styles.portfolio} aria-labelledby="portfolio-heading">
           <div className={styles.sectionContainer}>
             <ScrollReveal>
-              {/* No eyebrow — heading stands alone */}
+              <span className={styles.portfolioEyebrow}>Our Work</span>
               <h2 className={styles.sectionHeading} id="portfolio-heading">
                 What we've shipped so far.
               </h2>
@@ -222,7 +294,7 @@ export default function Home() {
 
             <div className={styles.portfolioGrid}>
               {PORTFOLIO_ITEMS.map((item, i) => (
-                <ScrollReveal key={item.name} delay={i * 0.07}>
+                <ScrollReveal key={item.name} delay={i * 0.07} variant="fadeScale">
                   <article
                     className={[
                       styles.portfolioItem,

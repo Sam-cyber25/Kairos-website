@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "remotion-render": {
+      "source": "qu-skills/skills",
+      "sourceType": "github",
+      "skillPath": "tools/video/remotion-render/SKILL.md",
+      "computedHash": "9a00df8ceabf3033451cf0c4d41cdda5f38024822de07ea69884055611064ffe"
+    }
+  }
+}
