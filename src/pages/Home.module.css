@@ -41,16 +41,36 @@
   position: relative;
   min-height: 100dvh;
   background:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.055'/%3E%3C/svg%3E"),
+    /* Layer 1: grain — organic texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
+    /* Layer 2: upper-right sage green glow — the hero moment */
     radial-gradient(
-      ellipse 140% 90% at 50% 110%,
-      rgba(140, 163, 153, 0.22) 0%,
-      rgba(28, 53, 45, 0.95) 38%,
-      #0D1A14 100%
+      ellipse 70% 70% at 88% 8%,
+      rgba(140, 163, 153, 0.55) 0%,
+      rgba(62, 96, 82, 0.28) 30%,
+      transparent 65%
     ),
-    #1C352D;
-  background-size: 256px 256px, cover, cover;
-  background-repeat: repeat, no-repeat, no-repeat;
+    /* Layer 3: centre depth */
+    radial-gradient(
+      ellipse 90% 60% at 50% 50%,
+      rgba(62, 96, 82, 0.12) 0%,
+      transparent 70%
+    ),
+    /* Layer 4: lower-left counter-glow */
+    radial-gradient(
+      ellipse 55% 45% at 10% 90%,
+      rgba(28, 53, 45, 0.9) 0%,
+      transparent 60%
+    ),
+    /* Layer 5: base diagonal gradient */
+    linear-gradient(
+      155deg,
+      #0A1510 0%,
+      #1C352D 45%,
+      #0D1A14 100%
+    );
+  background-size: 512px 512px, cover, cover, cover, cover;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;

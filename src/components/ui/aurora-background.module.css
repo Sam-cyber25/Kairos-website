@@ -1,6 +1,6 @@
 .wrapper {
   position: relative;
-  background: var(--bg-deep, #0D1A14);
+  background: #0D1A14;
   overflow: hidden;
 }
 
@@ -14,78 +14,99 @@
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(70px);
 }
 
-/* Large sage-green blob — top-left anchor */
+/* Blob 1 — upper area, sage green */
 .blob1 {
-  width: 80%;
-  height: 150%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(62, 96, 82, 0.5) 0%,
-    rgba(28, 53, 45, 0.3) 40%,
-    transparent 70%
-  );
-  top: -30%;
-  left: -20%;
-  animation: drift1 80s ease-in-out infinite;
-}
-
-/* Deep green blob — right side */
-.blob2 {
   width: 60%;
-  height: 120%;
+  height: 55%;
   background: radial-gradient(
     ellipse at center,
-    rgba(28, 53, 45, 0.6) 0%,
-    rgba(13, 26, 20, 0.2) 50%,
+    rgba(140, 163, 153, 0.35) 0%,
     transparent 70%
   );
-  top: -10%;
-  right: -15%;
-  animation: drift2 100s ease-in-out infinite;
-  animation-delay: -35s;
+  filter: blur(72px);
+  top: -20%;
+  left: 15%;
+  animation: auroraMove1 22s ease-in-out infinite;
 }
 
-/* Sage whisper blob — center-bottom */
+/* Blob 2 — centre-right, mid green */
+.blob2 {
+  width: 55%;
+  height: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(62, 96, 82, 0.28) 0%,
+    transparent 70%
+  );
+  filter: blur(80px);
+  top: 10%;
+  right: 10%;
+  animation: auroraMove2 18s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+/* Blob 3 — lower area, deep green mass */
 .blob3 {
-  width: 50%;
-  height: 80%;
+  width: 70%;
+  height: 45%;
   background: radial-gradient(
     ellipse at center,
-    rgba(140, 163, 153, 0.2) 0%,
-    rgba(62, 96, 82, 0.1) 50%,
+    rgba(28, 53, 45, 0.5) 0%,
     transparent 70%
   );
+  filter: blur(60px);
   bottom: -10%;
-  left: 25%;
-  animation: drift3 120s ease-in-out infinite;
-  animation-delay: -60s;
+  left: 5%;
+  animation: auroraMove3 25s ease-in-out infinite;
+  animation-delay: -14s;
 }
 
-@keyframes drift1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25%       { transform: translate(4%, 8%) scale(1.05); }
-  50%       { transform: translate(-3%, 12%) scale(0.95); }
-  75%       { transform: translate(6%, -4%) scale(1.02); }
+/* Blob 4 — centre, cream whisper accent */
+.blob4 {
+  width: 40%;
+  height: 35%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(248, 240, 229, 0.06) 0%,
+    transparent 70%
+  );
+  filter: blur(90px);
+  top: 20%;
+  left: 30%;
+  animation: auroraMove4 20s ease-in-out infinite;
+  animation-delay: -5s;
 }
 
-@keyframes drift2 {
+@keyframes auroraMove1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-6%, 10%) scale(1.08); }
-  66%      { transform: translate(3%, -6%) scale(0.96); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 15px) scale(0.97); }
 }
 
-@keyframes drift3 {
+@keyframes auroraMove2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-8%, -6%) scale(1.1); }
+  33%       { transform: translate(-25px, 18px) scale(1.06); }
+  66%       { transform: translate(20px, -12px) scale(0.95); }
+}
+
+@keyframes auroraMove3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(22px, -16px) scale(1.04); }
+}
+
+@keyframes auroraMove4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-18px, 12px) scale(1.08); }
+  66%       { transform: translate(24px, -8px) scale(0.94); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .blob1,
   .blob2,
-  .blob3 {
+  .blob3,
+  .blob4 {
     animation: none;
   }
 }
