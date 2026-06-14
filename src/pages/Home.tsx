@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, useSpring } from 'framer-motion';
 import HeroClock from '../components/hero/HeroClock';
 import PageTransition from '../components/layout/PageTransition';
@@ -42,6 +42,7 @@ const PORTFOLIO_ITEMS = [
     tags: ['Web Design', 'Local Business'],
     featured: true,
     comingSoon: false,
+    link: 'https://menon-institute.vercel.app/' as string | null,
   },
   {
     name: 'Coming Soon',
@@ -50,6 +51,7 @@ const PORTFOLIO_ITEMS = [
     tags: ['Web Design'],
     featured: false,
     comingSoon: true,
+    link: null as string | null,
   },
 ];
 
@@ -132,6 +134,104 @@ function ServiceRow({ num, title, description, index }: ServiceRowProps) {
   );
 }
 
+// ─── Portfolio card — tilt + link ────────────────────────────────────────────
+
+type PortfolioItemType = typeof PORTFOLIO_ITEMS[number];
+
+function PortfolioCard({ item }: { item: PortfolioItemType }) {
+  const reducedMotion = useReducedMotion();
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [hovering, setHovering] = useState(false);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (reducedMotion) return;
+      const el = e.currentTarget;
+      const rect = el.getBoundingClientRect();
+      const cx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+      const cy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      setTilt({ x: cy * -3, y: cx * 3 });
+    },
+    [reducedMotion],
+  );
+
+  const handleMouseEnter = useCallback(() => {
+    if (!reducedMotion) setHovering(true);
+  }, [reducedMotion]);
+
+  const handleMouseLeave = useCallback(() => {
+    setHovering(false);
+    setTilt({ x: 0, y: 0 });
+  }, []);
+
+  const tiltStyle: React.CSSProperties = reducedMotion
+    ? {}
+    : {
+        transform: `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: hovering ? 'transform 100ms ease-out' : 'transform 600ms ease-out',
+      };
+
+  const imageContent = (
+    <div className={styles.portfolioImageWrap} data-cursor-theme="dark">
+      <div
+        className={styles.portfolioPlaceholder}
+        aria-label={`${item.name} project preview`}
+      >
+        {item.comingSoon ? (
+          <span className={styles.comingSoonPulse}>Coming Soon</span>
+        ) : (
+          <span className={styles.placeholderText}>{item.name}</span>
+        )}
+      </div>
+      {!item.comingSoon && (
+        <div className={styles.portfolioOverlay}>
+          <span className={styles.viewLabel}>
+            {item.link ? 'View Site →' : 'View Project →'}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <article
+      className={[
+        styles.portfolioItem,
+        item.featured ? styles.featured : '',
+        item.comingSoon ? styles.comingSoon : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={tiltStyle}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {item.link ? (
+        <a
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'block', textDecoration: 'none' }}
+        >
+          {imageContent}
+        </a>
+      ) : (
+        imageContent
+      )}
+      <div className={styles.portfolioMeta}>
+        <h3 className={styles.portfolioName}>{item.name}</h3>
+        <div className={styles.portfolioTags}>
+          {item.tags.map(tag => (
+            <span key={tag} className={styles.tag}>{tag}</span>
+          ))}
+          <span className={styles.tag}>{item.location}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 // ─── component ───────────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -148,6 +248,13 @@ export default function Home() {
 
   const [quoteRef, quoteVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
   const reducedMotion = useReducedMotion();
+  const [scrolledPast, setScrolledPast] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolledPast(window.scrollY > 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <PageTransition>
@@ -220,8 +327,16 @@ export default function Home() {
           {/* Dissolving overlay — fades out 0–500ms */}
           <div className={styles.introOverlay} aria-hidden="true" />
 
-          <div className={styles.scrollIndicator} aria-hidden="true">
-            <ChevronDown size={24} strokeWidth={1.5} />
+          <div
+            className={[
+              styles.scrollIndicator,
+              scrolledPast ? styles.scrollIndicatorHidden : '',
+            ].filter(Boolean).join(' ')}
+            aria-hidden="true"
+          >
+            <div className={styles.scrollTrack}>
+              <div className={styles.scrollDot} />
+            </div>
           </div>
         </section>
 
@@ -295,41 +410,7 @@ export default function Home() {
             <div className={styles.portfolioGrid}>
               {PORTFOLIO_ITEMS.map((item, i) => (
                 <ScrollReveal key={item.name} delay={i * 0.07} variant="fadeScale">
-                  <article
-                    className={[
-                      styles.portfolioItem,
-                      item.featured ? styles.featured : '',
-                      item.comingSoon ? styles.comingSoon : '',
-                    ].filter(Boolean).join(' ')}
-                  >
-                    <div className={styles.portfolioImageWrap} data-cursor-theme="dark">
-                      <div
-                        className={styles.portfolioPlaceholder}
-                        aria-label={`${item.name} project preview`}
-                      >
-                        {item.comingSoon ? (
-                          <span className={styles.comingSoonPulse}>Coming Soon</span>
-                        ) : (
-                          <span className={styles.placeholderText}>{item.name}</span>
-                        )}
-                      </div>
-                      {!item.comingSoon && (
-                        <div className={styles.portfolioOverlay}>
-                          <span className={styles.viewLabel}>View Project</span>
-                          <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                        </div>
-                      )}
-                    </div>
-                    <div className={styles.portfolioMeta}>
-                      <h3 className={styles.portfolioName}>{item.name}</h3>
-                      <div className={styles.portfolioTags}>
-                        {item.tags.map(tag => (
-                          <span key={tag} className={styles.tag}>{tag}</span>
-                        ))}
-                        <span className={styles.tag}>{item.location}</span>
-                      </div>
-                    </div>
-                  </article>
+                  <PortfolioCard item={item} />
                 </ScrollReveal>
               ))}
             </div>

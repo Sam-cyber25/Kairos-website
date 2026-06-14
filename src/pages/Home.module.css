@@ -211,22 +211,48 @@
   animation: kairos-post-reveal 600ms cubic-bezier(0.23, 1, 0.32, 1) 3260ms forwards;
 }
 
-/* ── Scroll indicator — fades in at 3200ms, bobs indefinitely ───────────────── */
+/* ── Scroll indicator — elegant sliding dot (fades in at 3200ms) ────────────── */
 .scrollIndicator {
   position: absolute;
   bottom: var(--space-4);
   left: 50%;
   transform: translateX(-50%);
-  color: var(--text-on-dark);
   opacity: 0;
-  animation:
-    kairos-fade-in 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms 1 normal forwards,
-    bob 2s ease-in-out 3800ms infinite normal none;
+  animation: kairos-fade-in 600ms cubic-bezier(0.23, 1, 0.32, 1) 3200ms 1 normal forwards;
+  transition: opacity 400ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@keyframes bob {
-  0%, 100% { transform: translateX(-50%) translateY(0);   }
-  50%       { transform: translateX(-50%) translateY(7px); }
+.scrollIndicatorHidden {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.scrollTrack {
+  width: 2px;
+  height: 44px;
+  background: rgba(248, 240, 229, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.scrollDot {
+  width: 2px;
+  height: 12px;
+  background: rgba(248, 240, 229, 0.75);
+  border-radius: 2px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  animation: scroll-dot 1.8s cubic-bezier(0.23, 1, 0.32, 1) 3800ms infinite;
+}
+
+@keyframes scroll-dot {
+  0%   { top: 0; opacity: 0; }
+  10%  { top: 0; opacity: 1; }
+  70%  { top: calc(100% - 12px); opacity: 1; }
+  85%  { top: calc(100% - 12px); opacity: 0; }
+  100% { top: calc(100% - 12px); opacity: 0; }
 }
 
 /* ── Skip state — return visits within same session ─────────────────────────── */
@@ -249,8 +275,13 @@
 }
 
 .heroSkip .scrollIndicator {
-  opacity: 0.45 !important;
-  animation: bob 2s ease-in-out infinite !important;
+  opacity: 0.7 !important;
+  animation: none !important;
+}
+
+.heroSkip .scrollDot {
+  animation: scroll-dot 1.8s cubic-bezier(0.23, 1, 0.32, 1) infinite !important;
+  opacity: 0;
 }
 
 /* ── Reduced motion ─────────────────────────────────────────────────────────── */
@@ -275,7 +306,13 @@
 
   .scrollIndicator {
     opacity: 0.45 !important;
-    animation: bob 2s ease-in-out infinite !important;
+    animation: none !important;
+  }
+
+  .scrollDot {
+    animation: none !important;
+    top: 0;
+    opacity: 0.6;
   }
 }
 
@@ -337,7 +374,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(2rem, 4vw, 3.2rem);
-  color: rgba(28, 53, 45, 0.2);
+  color: rgba(28, 53, 45, 0.15);
   line-height: 1;
   padding-top: 4px;
   transition: color 150ms cubic-bezier(0.23, 1, 0.32, 1);
@@ -386,7 +423,7 @@
   }
 
   .serviceRow:hover .serviceNum {
-    color: rgba(28, 53, 45, 0.6);
+    color: rgba(28, 53, 45, 0.45);
   }
 
   .serviceRow:hover .serviceArrow {
@@ -565,7 +602,7 @@
   background: linear-gradient(transparent, rgba(15, 30, 24, 0.85));
   display: flex;
   align-items: flex-end;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 6px;
   padding: 0 16px 16px;
   opacity: 0;
