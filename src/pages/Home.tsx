@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { motion, useSpring } from 'framer-motion';
 import HeroClock from '../components/hero/HeroClock';
+import { HeroBackground } from '../components/ui/HeroBackground';
 import PageTransition from '../components/layout/PageTransition';
 import Button from '../components/ui/Button';
 import Marquee from '../components/ui/Marquee';
@@ -266,6 +267,7 @@ export default function Home() {
           aria-label="Hero"
           data-cursor-theme="dark"
         >
+          <HeroBackground />
           <div className={styles.heroGrid}  aria-hidden="true" />
           <div className={styles.heroNoise} aria-hidden="true" />
 
