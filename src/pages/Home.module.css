@@ -214,7 +214,7 @@
 /* ── Scroll indicator — elegant sliding dot (fades in at 3200ms) ────────────── */
 .scrollIndicator {
   position: absolute;
-  bottom: var(--space-4);
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -358,7 +358,7 @@
 
 .serviceRow {
   display: grid;
-  grid-template-columns: 80px 1fr auto;
+  grid-template-columns: 80px 1fr;
   align-items: start;
   padding: 32px 0;
   border-bottom: 1px solid rgba(28, 53, 45, 0.12);
@@ -405,18 +405,6 @@
   max-width: 55ch;
 }
 
-.serviceArrow {
-  font-size: 1.5rem;
-  color: rgba(28, 53, 45, 0.35);
-  padding-top: 4px;
-  line-height: 1;
-  flex-shrink: 0;
-  transition:
-    transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
-    color 200ms cubic-bezier(0.23, 1, 0.32, 1);
-  user-select: none;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .serviceRow:hover {
     background: rgba(28, 53, 45, 0.04);
@@ -425,21 +413,12 @@
   .serviceRow:hover .serviceNum {
     color: rgba(28, 53, 45, 0.45);
   }
-
-  .serviceRow:hover .serviceArrow {
-    transform: translateX(6px);
-    color: rgba(28, 53, 45, 0.65);
-  }
 }
 
 @media (max-width: 640px) {
   .serviceRow {
     grid-template-columns: 1fr;
     gap: 8px;
-  }
-
-  .serviceArrow {
-    display: none;
   }
 
   .serviceNum {

@@ -129,7 +129,6 @@ function ServiceRow({ num, title, description, index }: ServiceRowProps) {
         <h3 className={styles.serviceRowTitle}>{title}</h3>
         <p className={styles.serviceRowDesc}>{description}</p>
       </div>
-      <span className={styles.serviceArrow} aria-hidden="true">→</span>
     </motion.div>
   );
 }
@@ -251,7 +250,7 @@ export default function Home() {
   const [scrolledPast, setScrolledPast] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolledPast(window.scrollY > 80);
+    const onScroll = () => setScrolledPast(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
