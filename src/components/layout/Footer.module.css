@@ -1,19 +1,9 @@
 .footer {
   position: relative;
-  background: var(--bg-deep);
+  background: transparent;
   overflow: hidden;
   /* Safe area inset for notched devices */
   padding: var(--section-y) 0 calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
-}
-
-.gridOverlay {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(62, 96, 82, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(62, 96, 82, 0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
 }
 
 .inner {

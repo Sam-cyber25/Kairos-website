@@ -1,0 +1,96 @@
+.wrapper {
+  position: relative;
+  background: var(--bg-deep, #0D1A14);
+  overflow: hidden;
+}
+
+.aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+}
+
+/* Large sage-green blob — top-left anchor */
+.blob1 {
+  width: 80%;
+  height: 150%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(62, 96, 82, 0.5) 0%,
+    rgba(28, 53, 45, 0.3) 40%,
+    transparent 70%
+  );
+  top: -30%;
+  left: -20%;
+  animation: drift1 80s ease-in-out infinite;
+}
+
+/* Deep green blob — right side */
+.blob2 {
+  width: 60%;
+  height: 120%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(28, 53, 45, 0.6) 0%,
+    rgba(13, 26, 20, 0.2) 50%,
+    transparent 70%
+  );
+  top: -10%;
+  right: -15%;
+  animation: drift2 100s ease-in-out infinite;
+  animation-delay: -35s;
+}
+
+/* Sage whisper blob — center-bottom */
+.blob3 {
+  width: 50%;
+  height: 80%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(140, 163, 153, 0.2) 0%,
+    rgba(62, 96, 82, 0.1) 50%,
+    transparent 70%
+  );
+  bottom: -10%;
+  left: 25%;
+  animation: drift3 120s ease-in-out infinite;
+  animation-delay: -60s;
+}
+
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%       { transform: translate(4%, 8%) scale(1.05); }
+  50%       { transform: translate(-3%, 12%) scale(0.95); }
+  75%       { transform: translate(6%, -4%) scale(1.02); }
+}
+
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-6%, 10%) scale(1.08); }
+  66%      { transform: translate(3%, -6%) scale(0.96); }
+}
+
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-8%, -6%) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob1,
+  .blob2,
+  .blob3 {
+    animation: none;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}

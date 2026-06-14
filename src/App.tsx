@@ -3,7 +3,7 @@ import { Outlet, useLocation, ScrollRestoration } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
+import FooterWithAurora from './components/layout/FooterWithAurora';
 import CustomCursor from './components/layout/CustomCursor';
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
       <AnimatePresence mode="wait" initial={false}>
         <Outlet key={location.pathname} />
       </AnimatePresence>
-      <Footer />
+      <FooterWithAurora />
     </>
   );
 }
