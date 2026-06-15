@@ -8,7 +8,7 @@ import Marquee from '../components/ui/Marquee';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { useReducedMotion } from '../hooks/useReducedMotion';
-import { HeroBackground } from '../components/ui/HeroBackground';
+import { KairosAurora } from '../components/ui/KairosAurora';
 import styles from './Home.module.css';
 
 // ─── data ────────────────────────────────────────────────────────────────────
@@ -267,7 +267,7 @@ export default function Home() {
           data-cursor-theme="dark"
           style={{ position: 'relative' }}
         >
-          <HeroBackground />
+          <KairosAurora variant="hero" />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div className={styles.heroContent}>
 
