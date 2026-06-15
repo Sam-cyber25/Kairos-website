@@ -8,6 +8,7 @@ import Marquee from '../components/ui/Marquee';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { HeroBackground } from '../components/ui/HeroBackground';
 import styles from './Home.module.css';
 
 // ─── data ────────────────────────────────────────────────────────────────────
@@ -264,68 +265,72 @@ export default function Home() {
           className={`${styles.hero} ${isIntro ? '' : styles.heroSkip}`}
           aria-label="Hero"
           data-cursor-theme="dark"
+          style={{ position: 'relative' }}
         >
-          <div className={styles.heroContent}>
+          <HeroBackground />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div className={styles.heroContent}>
 
-            {/* Step 3 (2400ms): logo */}
-            <img
-              src="/kairos-mark-light.png"
-              alt="Kairos"
-              className={styles.introLogo}
-            />
+              {/* Step 3 (2400ms): logo */}
+              <img
+                src="/kairos-mark-light.png"
+                alt="Kairos"
+                className={styles.introLogo}
+              />
 
-            {/* Step 2 (1500ms+): KAIROS typewriter — letters arrive with translateY */}
-            <h1 className={styles.introKairos} aria-label="Kairos">
-              {'KAIROS'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className={styles.introLetter}
-                  style={isIntro ? { animationDelay: `${1500 + i * 90}ms` } : undefined}
-                  aria-hidden="true"
-                >
-                  {letter}
-                </span>
-              ))}
-            </h1>
+              {/* Step 2 (1500ms+): KAIROS typewriter — letters arrive with translateY */}
+              <h1 className={styles.introKairos} aria-label="Kairos">
+                {'KAIROS'.split('').map((letter, i) => (
+                  <span
+                    key={i}
+                    className={styles.introLetter}
+                    style={isIntro ? { animationDelay: `${1500 + i * 90}ms` } : undefined}
+                    aria-hidden="true"
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </h1>
 
-            {/* Step 1 (600ms): tagline curtain left → right */}
-            <p className={styles.introTagline} aria-label="The pursuit continues">
-              — THE PURSUIT CONTINUES —
-            </p>
+              {/* Step 1 (600ms): tagline curtain left → right */}
+              <p className={styles.introTagline} aria-label="The pursuit continues">
+                — THE PURSUIT CONTINUES —
+              </p>
 
-            {/* Step 4 (3200ms): subheadline + CTAs */}
-            <div className={styles.heroPostContent}>
-              <div className={styles.heroPostText}>
-                <p className={styles.heroHeadline}>
-                  We build websites that work.
-                </p>
-                <p className={styles.heroSubline}>
-                  Every business deserves a website that actually works.
-                </p>
-              </div>
-              <div className={styles.heroCtas}>
-                <MagneticCTA data-cursor-force="dark">
-                  <Button as="a" href="/work" variant="filled">See Our Work</Button>
-                </MagneticCTA>
-                <MagneticCTA>
-                  <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
-                </MagneticCTA>
+              {/* Step 4 (3200ms): subheadline + CTAs */}
+              <div className={styles.heroPostContent}>
+                <div className={styles.heroPostText}>
+                  <p className={styles.heroHeadline}>
+                    We build websites that work.
+                  </p>
+                  <p className={styles.heroSubline}>
+                    Every business deserves a website that actually works.
+                  </p>
+                </div>
+                <div className={styles.heroCtas}>
+                  <MagneticCTA data-cursor-force="dark">
+                    <Button as="a" href="/work" variant="filled">See Our Work</Button>
+                  </MagneticCTA>
+                  <MagneticCTA>
+                    <Button as="a" href="/contact" variant="outlined">Get In Touch</Button>
+                  </MagneticCTA>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Dissolving overlay — fades out 0–500ms */}
-          <div className={styles.introOverlay} aria-hidden="true" />
+            {/* Dissolving overlay — fades out 0–500ms */}
+            <div className={styles.introOverlay} aria-hidden="true" />
 
-          <div
-            className={[
-              styles.scrollIndicator,
-              scrolledPast ? styles.scrollIndicatorHidden : '',
-            ].filter(Boolean).join(' ')}
-            aria-hidden="true"
-          >
-            <div className={styles.scrollTrack}>
-              <div className={styles.scrollDot} />
+            <div
+              className={[
+                styles.scrollIndicator,
+                scrolledPast ? styles.scrollIndicatorHidden : '',
+              ].filter(Boolean).join(' ')}
+              aria-hidden="true"
+            >
+              <div className={styles.scrollTrack}>
+                <div className={styles.scrollDot} />
+              </div>
             </div>
           </div>
         </section>
