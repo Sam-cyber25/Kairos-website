@@ -67,14 +67,24 @@ function MagneticCTA({ children, ...rest }: MagneticCTAProps) {
   const x = useSpring(0, { stiffness: 150, damping: 15 });
   const y = useSpring(0, { stiffness: 150, damping: 15 });
 
+  const canHover = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+  );
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (reducedMotion) return;
+      if (reducedMotion || !canHover.current) return;
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      x.set(((e.clientX - (rect.left + rect.width / 2)) / rect.width) * 8);
-      y.set(((e.clientY - (rect.top + rect.height / 2)) / rect.height) * 8);
+      const cx = e.clientX - (rect.left + rect.width / 2);
+      const cy = e.clientY - (rect.top + rect.height / 2);
+      const distance = Math.sqrt(cx * cx + cy * cy);
+      const maxDist = 80;
+      if (distance > maxDist) return;
+      const pull = 1 - distance / maxDist;
+      x.set(cx * pull * 0.35);
+      y.set(cy * pull * 0.35);
     },
     [x, y, reducedMotion],
   );
@@ -126,7 +136,10 @@ function ServiceRow({ num, title, description, index }: ServiceRowProps) {
     >
       <span className={styles.serviceNum} aria-hidden="true">{num}</span>
       <div className={styles.serviceBody}>
-        <h3 className={styles.serviceRowTitle}>{title}</h3>
+        <div className={styles.serviceBodyTop}>
+          <h3 className={styles.serviceRowTitle}>{title}</h3>
+          <span className={styles.serviceArrow} aria-hidden="true"><ArrowRight size={18} strokeWidth={1.5} /></span>
+        </div>
         <p className={styles.serviceRowDesc}>{description}</p>
       </div>
     </motion.div>
@@ -166,7 +179,9 @@ function PortfolioCard({ item }: { item: PortfolioItemType }) {
   const tiltStyle: React.CSSProperties = reducedMotion
     ? {}
     : {
-        transform: `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transform: hovering
+          ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-4px)`
+          : `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: hovering ? 'transform 100ms ease-out' : 'transform 600ms ease-out',
       };
 
@@ -245,12 +260,12 @@ export default function Home() {
     return false;
   });
 
-  const [quoteRef, quoteVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.2 });
+  const [quoteRef, quoteVisible] = useIntersectionObserver<HTMLDivElement>({ threshold: 0.3 });
   const reducedMotion = useReducedMotion();
   const [scrolledPast, setScrolledPast] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolledPast(window.scrollY > 20);
+    const onScroll = () => setScrolledPast(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -328,8 +343,8 @@ export default function Home() {
               ].filter(Boolean).join(' ')}
               aria-hidden="true"
             >
-              <div className={styles.scrollTrack}>
-                <div className={styles.scrollDot} />
+              <div className={styles.scrollMouse}>
+                <div className={styles.scrollWheel} />
               </div>
             </div>
           </div>
